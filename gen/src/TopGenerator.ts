@@ -53,18 +53,11 @@ export class TopGenerator extends GenBase {
   }
 
   genPayloadMethod(method: IMethod) {
-    if (method.parameter.length == 0) {
-      this.push(`defdelegate ${method.name}(pid), to: Socket`);
-      this.push(`defdelegate ${method.name}(pid, task), to: Socket`);
-      this.push(`defdelegate ${method.name}(pid, task, opts), to: Socket`);
-    }
-    if (method.parameter.length > 0) {
-      this.push(`defdelegate ${method.name}(pid, payload), to: Socket`);
-      this.push(`defdelegate ${method.name}(pid, payload, task), to: Socket`);
-      this.push(
-        `defdelegate ${method.name}(pid, payload, task, opts), to: Socket`
-      );
-    }
+    this.push(`defdelegate ${method.name}(pid, payload), to: Socket`);
+    this.push(`defdelegate ${method.name}(pid, payload, task), to: Socket`);
+    this.push(
+      `defdelegate ${method.name}(pid, payload, task, opts), to: Socket`
+    );
   }
 
   genInlineMethod(method: IMethod) {

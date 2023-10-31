@@ -174,27 +174,15 @@ export class SocketGenerator extends GenBase {
   }
 
   genPayloadMethod(method: IMethod) {
-    if (method.parameter.length == 0) {
-      this.push(`def ${method.name}(pid) do`);
-    }
-    if (method.parameter.length > 0) {
-      this.push(`def ${method.name}(pid, payload) do`);
-    }
+    this.push(`def ${method.name}(pid, payload) do`);
     this.push(`  exec_method(pid, {"${method.name}", [payload: payload]})`);
     this.push("end");
     this.push("");
   }
   genPayloadTaskMethod(method: IMethod) {
-    if (method.parameter.length == 0) {
-      this.push(
-        `def ${method.name}(pid, task, opts \\\\ task_opts_default()) do`
-      );
-    }
-    if (method.parameter.length > 0) {
-      this.push(
-        `def ${method.name}(pid, payload, task, opts \\\\ task_opts_default()) do`
-      );
-    }
+    this.push(
+      `def ${method.name}(pid, payload, task, opts \\\\ task_opts_default()) do`
+    );
     this.push(
       `  exec_method(pid, {"${method.name}", [payload: payload, __receiver__: task]}, opts)`
     );
