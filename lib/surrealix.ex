@@ -2,17 +2,17 @@
 
 defmodule Surrealix do
   alias Surrealix.Socket, as: Socket
-  
+
   defdelegate start_link(), to: Socket
   defdelegate start_link(opts), to: Socket
-  
+
   defdelegate stop(pid), to: Socket
-  
+
   ### API METHODS : START ###
   @doc """
   use [ ns, db ]
     Specifies the namespace and database for the current connection
-  
+
     REQ:
       {
       "id": 1,
@@ -22,7 +22,7 @@ defmodule Surrealix do
         "docs"
       ]
     }
-  
+
     RES:
       {
       "id": 1,
@@ -32,17 +32,17 @@ defmodule Surrealix do
   defdelegate use(pid, ns, db), to: Socket
   defdelegate use(pid, ns, db, task), to: Socket
   defdelegate use(pid, ns, db, task, opts), to: Socket
-  
+
   @doc """
   info
     This method returns the record of an authenticated scope user.
-  
+
     REQ:
       {
       "id": 1,
       "method": "info"
     }
-  
+
     RES:
       {
       "id": 1,
@@ -53,11 +53,11 @@ defmodule Surrealix do
     }
   """
   defdelegate info(pid), to: Socket
-  
+
   @doc """
   signup [ NS, DB, SC, ... ]
     This method allows you to signup a user against a scope's SIGNUP method
-  
+
     REQ:
       {
       "id": 1,
@@ -72,7 +72,7 @@ defmodule Surrealix do
         }
       ]
     }
-  
+
     RES:
       {
       "id": 1,
@@ -82,12 +82,12 @@ defmodule Surrealix do
   defdelegate signup(pid, payload), to: Socket
   defdelegate signup(pid, payload, task), to: Socket
   defdelegate signup(pid, payload, task, opts), to: Socket
-  
+
   @doc """
   signin [ NS, DB, SC, ... ]
     This method allows you to signin a root, NS, DB or SC user against SurrealDB
     As Root
-  
+
     REQ:
       {
       "id": 1,
@@ -99,14 +99,14 @@ defmodule Surrealix do
         }
       ]
     }
-  
+
     RES:
       {
       "id": 1,
       "result": null
     }
     Signin as scope
-  
+
     REQ:
       {
       "id": 1,
@@ -121,7 +121,7 @@ defmodule Surrealix do
         }
       ]
     }
-  
+
     RES:
       {
       "id": 1,
@@ -131,11 +131,11 @@ defmodule Surrealix do
   defdelegate signin(pid, payload), to: Socket
   defdelegate signin(pid, payload, task), to: Socket
   defdelegate signin(pid, payload, task, opts), to: Socket
-  
+
   @doc """
   authenticate [ token ]
     This method allows you to authenticate a user against SurrealDB with a token
-  
+
     REQ:
       {
       "id": 1,
@@ -144,7 +144,7 @@ defmodule Surrealix do
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTdXJyZWFsREIiLCJpYXQiOjE1MTYyMzkwMjIsIm5iZiI6MTUxNjIzOTAyMiwiZXhwIjoxODM2NDM5MDIyLCJOUyI6InRlc3QiLCJEQiI6InRlc3QiLCJTQyI6InVzZXIiLCJJRCI6InVzZXI6dG9iaWUifQ.N22Gp9ze0rdR06McGj1G-h2vu6a6n9IVqUbMFJlOxxA"
       ]
     }
-  
+
     RES:
       {
       "id": 1,
@@ -154,17 +154,17 @@ defmodule Surrealix do
   defdelegate authenticate(pid, token), to: Socket
   defdelegate authenticate(pid, token, task), to: Socket
   defdelegate authenticate(pid, token, task, opts), to: Socket
-  
+
   @doc """
   invalidate
     This method will invalidate the user's session for the current connection
-  
+
     REQ:
       {
       "id": 1,
       "method": "invalidate"
     }
-  
+
     RES:
       {
       "id": 1,
@@ -172,11 +172,11 @@ defmodule Surrealix do
     }
   """
   defdelegate invalidate(pid), to: Socket
-  
+
   @doc """
   let [ name, value ]
     This method stores a variable on the current connection
-  
+
     REQ:
       {
       "id": 1,
@@ -186,7 +186,7 @@ defmodule Surrealix do
         "https://surrealdb.com/"
       ]
     }
-  
+
     RES:
       {
       "id": 1,
@@ -196,11 +196,11 @@ defmodule Surrealix do
   defdelegate let(pid, name, value), to: Socket
   defdelegate let(pid, name, value, task), to: Socket
   defdelegate let(pid, name, value, task, opts), to: Socket
-  
+
   @doc """
   unset [ name ]
     This method removes a variable from the current connection
-  
+
     REQ:
       {
       "id": 1,
@@ -209,7 +209,7 @@ defmodule Surrealix do
         "website"
       ]
     }
-  
+
     RES:
       {
       "id": 1,
@@ -219,11 +219,11 @@ defmodule Surrealix do
   defdelegate unset(pid, name), to: Socket
   defdelegate unset(pid, name, task), to: Socket
   defdelegate unset(pid, name, task, opts), to: Socket
-  
+
   @doc """
   live [ table ]
     This methods initiates a live query for a specified table name
-  
+
     REQ:
       {
       "id": 1,
@@ -232,17 +232,17 @@ defmodule Surrealix do
         "person"
       ]
     }
-  
+
     RES:
       {
       "id": 1,
       "result": "0189d6e3-8eac-703a-9a48-d9faa78b44b9"
     }
     Live notification
-  
+
     REQ:
       {}
-  
+
     RES:
       {
       "result": {
@@ -258,11 +258,11 @@ defmodule Surrealix do
   defdelegate live(pid, table, diff), to: Socket
   defdelegate live(pid, table, diff, task), to: Socket
   defdelegate live(pid, table, diff, task, opts), to: Socket
-  
+
   @doc """
   kill [ queryUuid ]
     This methods kills an active live query
-  
+
     REQ:
       {
       "id": 1,
@@ -271,7 +271,7 @@ defmodule Surrealix do
         "0189d6e3-8eac-703a-9a48-d9faa78b44b9"
       ]
     }
-  
+
     RES:
       {
       "id": 1,
@@ -281,11 +281,11 @@ defmodule Surrealix do
   defdelegate kill(pid, queryUuid), to: Socket
   defdelegate kill(pid, queryUuid, task), to: Socket
   defdelegate kill(pid, queryUuid, task, opts), to: Socket
-  
+
   @doc """
   query [ sql, vars ]
     This method executes a custom query against SurrealDB
-  
+
     REQ:
       {
       "id": 1,
@@ -297,7 +297,7 @@ defmodule Surrealix do
         }
       ]
     }
-  
+
     RES:
       {
       "id": 1,
@@ -328,11 +328,11 @@ defmodule Surrealix do
   defdelegate query(pid, sql, vars), to: Socket
   defdelegate query(pid, sql, vars, task), to: Socket
   defdelegate query(pid, sql, vars, task, opts), to: Socket
-  
+
   @doc """
   select [ thing ]
     This method selects either all records in a table or a single record
-  
+
     REQ:
       {
       "id": 1,
@@ -341,7 +341,7 @@ defmodule Surrealix do
         "person"
       ]
     }
-  
+
     RES:
       {
       "id": 1,
@@ -356,11 +356,11 @@ defmodule Surrealix do
   defdelegate select(pid, thing), to: Socket
   defdelegate select(pid, thing, task), to: Socket
   defdelegate select(pid, thing, task, opts), to: Socket
-  
+
   @doc """
   create [ thing, data ]
     This method creates a record either with a random or specified ID
-  
+
     REQ:
       {
       "id": 1,
@@ -372,7 +372,7 @@ defmodule Surrealix do
         }
       ]
     }
-  
+
     RES:
       {
       "id": 1,
@@ -387,12 +387,12 @@ defmodule Surrealix do
   defdelegate create(pid, thing, data), to: Socket
   defdelegate create(pid, thing, data, task), to: Socket
   defdelegate create(pid, thing, data, task, opts), to: Socket
-  
+
   @doc """
   insert [ thing, data ]
     This method creates a record either with a random or specified ID
     Single insert
-  
+
     REQ:
       {
       "id": 1,
@@ -404,7 +404,7 @@ defmodule Surrealix do
         }
       ]
     }
-  
+
     RES:
       {
       "id": 1,
@@ -416,7 +416,7 @@ defmodule Surrealix do
       ]
     }
     Bulk insert
-  
+
     REQ:
       {
       "id": 1,
@@ -433,7 +433,7 @@ defmodule Surrealix do
         ]
       ]
     }
-  
+
     RES:
       {
       "id": 1,
@@ -452,11 +452,11 @@ defmodule Surrealix do
   defdelegate insert(pid, thing, data), to: Socket
   defdelegate insert(pid, thing, data, task), to: Socket
   defdelegate insert(pid, thing, data, task, opts), to: Socket
-  
+
   @doc """
   update [ thing, data ]
     This method replaces either all records in a table or a single record with specified data
-  
+
     REQ:
       {
       "id": 1,
@@ -468,7 +468,7 @@ defmodule Surrealix do
         }
       ]
     }
-  
+
     RES:
       {
       "id": 1,
@@ -481,11 +481,11 @@ defmodule Surrealix do
   defdelegate update(pid, thing, data), to: Socket
   defdelegate update(pid, thing, data, task), to: Socket
   defdelegate update(pid, thing, data, task, opts), to: Socket
-  
+
   @doc """
   merge [ thing, data ]
     This method merges specified data into either all records in a table or a single record
-  
+
     REQ:
       {
       "id": 1,
@@ -497,7 +497,7 @@ defmodule Surrealix do
         }
       ]
     }
-  
+
     RES:
       {
       "id": 1,
@@ -518,11 +518,11 @@ defmodule Surrealix do
   defdelegate merge(pid, thing, data), to: Socket
   defdelegate merge(pid, thing, data, task), to: Socket
   defdelegate merge(pid, thing, data, task, opts), to: Socket
-  
+
   @doc """
   patch [ thing, patches, diff ]
     This method patches either all records in a table or a single record with specified patches
-  
+
     REQ:
       {
       "id": 1,
@@ -538,7 +538,7 @@ defmodule Surrealix do
         ]
       ]
     }
-  
+
     RES:
       {
       "id": 1,
@@ -563,11 +563,11 @@ defmodule Surrealix do
   defdelegate patch(pid, thing, patches, diff), to: Socket
   defdelegate patch(pid, thing, patches, diff, task), to: Socket
   defdelegate patch(pid, thing, patches, diff, task, opts), to: Socket
-  
+
   @doc """
   delete [ thing ]
     This method deletes either all records in a table or a single record
-  
+
     REQ:
       {
       "id": 1,
@@ -576,7 +576,7 @@ defmodule Surrealix do
         "person:8s0j0bbm3ngrd5c9bx53"
       ]
     }
-  
+
     RES:
       {
       "id": 1,
@@ -591,6 +591,6 @@ defmodule Surrealix do
   defdelegate delete(pid, thing), to: Socket
   defdelegate delete(pid, thing, task), to: Socket
   defdelegate delete(pid, thing, task, opts), to: Socket
-  
+
   ### API METHODS : FINISH ###
 end

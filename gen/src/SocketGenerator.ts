@@ -112,7 +112,7 @@ export class SocketGenerator extends GenBase {
     end
 
     def handle_frame({type, msg}, state) do
-      # IO.inspect({"HANDLE_FRAME", type, msg})
+      IO.inspect({"HANDLE_FRAME", type, msg})
       # IO.inspect(state, label: "state")
       task = Keyword.get(state, :__receiver__)
 
