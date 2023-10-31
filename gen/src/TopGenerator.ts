@@ -34,12 +34,10 @@ export class TopGenerator extends GenBase {
 
   genMethods() {
     this.push("");
-    this.push("### API METHODS : START ###");
     api.methods.forEach((method) => {
       this.genMethod(method);
       this.push("");
     });
-    this.push("### API METHODS : FINISH ###");
   }
 
   genMethod(method: IMethod) {
@@ -88,15 +86,13 @@ export class TopGenerator extends GenBase {
         this.push(`  ${example.title}`);
       }
       this.push(``);
-      this.push(`  REQ:`);
+      this.push(`  Example request:`);
       let str = JSON.stringify(example.req.data, null, 2);
-      str = lpad(str, "    ");
-      this.push(str);
+      this.plainPush(lpad(str, "    "));
       this.push(``);
-      this.push(`  RES:`);
+      this.push(`  Example response:`);
       str = JSON.stringify(example.res.data, null, 2);
-      str = lpad(str, "    ");
-      this.push(str);
+      this.plainPush(lpad(str, "    "));
     });
     this.push(`"""`);
   }

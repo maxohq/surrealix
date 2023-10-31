@@ -238,12 +238,12 @@ export class SocketGenerator extends GenBase {
         this.push(`  ${example.title}`);
       }
       this.push(``);
-      this.push(`  REQ:`);
+      this.push(`  Example request:`);
       let str = JSON.stringify(example.req.data, null, 2);
       str = lpad(str, "    ");
       this.push(str);
       this.push(``);
-      this.push(`  RES:`);
+      this.push(`  Example response:`);
       str = JSON.stringify(example.res.data, null, 2);
       str = lpad(str, "    ");
       this.push(str);

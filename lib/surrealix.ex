@@ -8,13 +8,12 @@ defmodule Surrealix do
 
   defdelegate stop(pid), to: Socket
 
-  ### API METHODS : START ###
   @doc """
   use [ ns, db ]
     Specifies the namespace and database for the current connection
 
-    REQ:
-      {
+    Example request:
+    {
       "id": 1,
       "method": "use",
       "params": [
@@ -23,8 +22,8 @@ defmodule Surrealix do
       ]
     }
 
-    RES:
-      {
+    Example response:
+    {
       "id": 1,
       "result": null
     }
@@ -37,14 +36,14 @@ defmodule Surrealix do
   info
     This method returns the record of an authenticated scope user.
 
-    REQ:
-      {
+    Example request:
+    {
       "id": 1,
       "method": "info"
     }
 
-    RES:
-      {
+    Example response:
+    {
       "id": 1,
       "result": {
         "id": "user:john",
@@ -58,8 +57,8 @@ defmodule Surrealix do
   signup [ NS, DB, SC, ... ]
     This method allows you to signup a user against a scope's SIGNUP method
 
-    REQ:
-      {
+    Example request:
+    {
       "id": 1,
       "method": "signup",
       "params": [
@@ -73,8 +72,8 @@ defmodule Surrealix do
       ]
     }
 
-    RES:
-      {
+    Example response:
+    {
       "id": 1,
       "result": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTdXJyZWFsREIiLCJpYXQiOjE1MTYyMzkwMjIsIm5iZiI6MTUxNjIzOTAyMiwiZXhwIjoxODM2NDM5MDIyLCJOUyI6InRlc3QiLCJEQiI6InRlc3QiLCJTQyI6InVzZXIiLCJJRCI6InVzZXI6dG9iaWUifQ.N22Gp9ze0rdR06McGj1G-h2vu6a6n9IVqUbMFJlOxxA"
     }
@@ -88,8 +87,8 @@ defmodule Surrealix do
     This method allows you to signin a root, NS, DB or SC user against SurrealDB
     As Root
 
-    REQ:
-      {
+    Example request:
+    {
       "id": 1,
       "method": "signin",
       "params": [
@@ -100,15 +99,15 @@ defmodule Surrealix do
       ]
     }
 
-    RES:
-      {
+    Example response:
+    {
       "id": 1,
       "result": null
     }
     Signin as scope
 
-    REQ:
-      {
+    Example request:
+    {
       "id": 1,
       "method": "signin",
       "params": [
@@ -122,8 +121,8 @@ defmodule Surrealix do
       ]
     }
 
-    RES:
-      {
+    Example response:
+    {
       "id": 1,
       "result": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTdXJyZWFsREIiLCJpYXQiOjE1MTYyMzkwMjIsIm5iZiI6MTUxNjIzOTAyMiwiZXhwIjoxODM2NDM5MDIyLCJOUyI6InRlc3QiLCJEQiI6InRlc3QiLCJTQyI6InVzZXIiLCJJRCI6InVzZXI6dG9iaWUifQ.N22Gp9ze0rdR06McGj1G-h2vu6a6n9IVqUbMFJlOxxA"
     }
@@ -136,8 +135,8 @@ defmodule Surrealix do
   authenticate [ token ]
     This method allows you to authenticate a user against SurrealDB with a token
 
-    REQ:
-      {
+    Example request:
+    {
       "id": 1,
       "method": "authenticate",
       "params": [
@@ -145,8 +144,8 @@ defmodule Surrealix do
       ]
     }
 
-    RES:
-      {
+    Example response:
+    {
       "id": 1,
       "result": null
     }
@@ -159,14 +158,14 @@ defmodule Surrealix do
   invalidate
     This method will invalidate the user's session for the current connection
 
-    REQ:
-      {
+    Example request:
+    {
       "id": 1,
       "method": "invalidate"
     }
 
-    RES:
-      {
+    Example response:
+    {
       "id": 1,
       "result": null
     }
@@ -177,8 +176,8 @@ defmodule Surrealix do
   let [ name, value ]
     This method stores a variable on the current connection
 
-    REQ:
-      {
+    Example request:
+    {
       "id": 1,
       "method": "let",
       "params": [
@@ -187,8 +186,8 @@ defmodule Surrealix do
       ]
     }
 
-    RES:
-      {
+    Example response:
+    {
       "id": 1,
       "result": null
     }
@@ -201,8 +200,8 @@ defmodule Surrealix do
   unset [ name ]
     This method removes a variable from the current connection
 
-    REQ:
-      {
+    Example request:
+    {
       "id": 1,
       "method": "unset",
       "params": [
@@ -210,8 +209,8 @@ defmodule Surrealix do
       ]
     }
 
-    RES:
-      {
+    Example response:
+    {
       "id": 1,
       "result": null
     }
@@ -224,8 +223,8 @@ defmodule Surrealix do
   live [ table ]
     This methods initiates a live query for a specified table name
 
-    REQ:
-      {
+    Example request:
+    {
       "id": 1,
       "method": "live",
       "params": [
@@ -233,18 +232,18 @@ defmodule Surrealix do
       ]
     }
 
-    RES:
-      {
+    Example response:
+    {
       "id": 1,
       "result": "0189d6e3-8eac-703a-9a48-d9faa78b44b9"
     }
     Live notification
 
-    REQ:
-      {}
+    Example request:
+    {}
 
-    RES:
-      {
+    Example response:
+    {
       "result": {
         "action": "CREATE",
         "id": "0189d6e3-8eac-703a-9a48-d9faa78b44b9",
@@ -263,8 +262,8 @@ defmodule Surrealix do
   kill [ queryUuid ]
     This methods kills an active live query
 
-    REQ:
-      {
+    Example request:
+    {
       "id": 1,
       "method": "kill",
       "params": [
@@ -272,8 +271,8 @@ defmodule Surrealix do
       ]
     }
 
-    RES:
-      {
+    Example response:
+    {
       "id": 1,
       "result": null
     }
@@ -286,8 +285,8 @@ defmodule Surrealix do
   query [ sql, vars ]
     This method executes a custom query against SurrealDB
 
-    REQ:
-      {
+    Example request:
+    {
       "id": 1,
       "method": "query",
       "params": [
@@ -298,8 +297,8 @@ defmodule Surrealix do
       ]
     }
 
-    RES:
-      {
+    Example response:
+    {
       "id": 1,
       "result": [
         {
@@ -333,8 +332,8 @@ defmodule Surrealix do
   select [ thing ]
     This method selects either all records in a table or a single record
 
-    REQ:
-      {
+    Example request:
+    {
       "id": 1,
       "method": "select",
       "params": [
@@ -342,8 +341,8 @@ defmodule Surrealix do
       ]
     }
 
-    RES:
-      {
+    Example response:
+    {
       "id": 1,
       "result": [
         {
@@ -361,8 +360,8 @@ defmodule Surrealix do
   create [ thing, data ]
     This method creates a record either with a random or specified ID
 
-    REQ:
-      {
+    Example request:
+    {
       "id": 1,
       "method": "create",
       "params": [
@@ -373,8 +372,8 @@ defmodule Surrealix do
       ]
     }
 
-    RES:
-      {
+    Example response:
+    {
       "id": 1,
       "result": [
         {
@@ -393,8 +392,8 @@ defmodule Surrealix do
     This method creates a record either with a random or specified ID
     Single insert
 
-    REQ:
-      {
+    Example request:
+    {
       "id": 1,
       "method": "insert",
       "params": [
@@ -405,8 +404,8 @@ defmodule Surrealix do
       ]
     }
 
-    RES:
-      {
+    Example response:
+    {
       "id": 1,
       "result": [
         {
@@ -417,8 +416,8 @@ defmodule Surrealix do
     }
     Bulk insert
 
-    REQ:
-      {
+    Example request:
+    {
       "id": 1,
       "method": "insert",
       "params": [
@@ -434,8 +433,8 @@ defmodule Surrealix do
       ]
     }
 
-    RES:
-      {
+    Example response:
+    {
       "id": 1,
       "result": [
         {
@@ -457,8 +456,8 @@ defmodule Surrealix do
   update [ thing, data ]
     This method replaces either all records in a table or a single record with specified data
 
-    REQ:
-      {
+    Example request:
+    {
       "id": 1,
       "method": "update",
       "params": [
@@ -469,8 +468,8 @@ defmodule Surrealix do
       ]
     }
 
-    RES:
-      {
+    Example response:
+    {
       "id": 1,
       "result": {
         "id": "person:8s0j0bbm3ngrd5c9bx53",
@@ -486,8 +485,8 @@ defmodule Surrealix do
   merge [ thing, data ]
     This method merges specified data into either all records in a table or a single record
 
-    REQ:
-      {
+    Example request:
+    {
       "id": 1,
       "method": "merge",
       "params": [
@@ -498,8 +497,8 @@ defmodule Surrealix do
       ]
     }
 
-    RES:
-      {
+    Example response:
+    {
       "id": 1,
       "result": [
         {
@@ -523,8 +522,8 @@ defmodule Surrealix do
   patch [ thing, patches, diff ]
     This method patches either all records in a table or a single record with specified patches
 
-    REQ:
-      {
+    Example request:
+    {
       "id": 1,
       "method": "patch",
       "params": [
@@ -539,8 +538,8 @@ defmodule Surrealix do
       ]
     }
 
-    RES:
-      {
+    Example response:
+    {
       "id": 1,
       "result": [
         [
@@ -568,8 +567,8 @@ defmodule Surrealix do
   delete [ thing ]
     This method deletes either all records in a table or a single record
 
-    REQ:
-      {
+    Example request:
+    {
       "id": 1,
       "method": "delete",
       "params": [
@@ -577,8 +576,8 @@ defmodule Surrealix do
       ]
     }
 
-    RES:
-      {
+    Example response:
+    {
       "id": 1,
       "result": {
         "active": true,
@@ -591,6 +590,4 @@ defmodule Surrealix do
   defdelegate delete(pid, thing), to: Socket
   defdelegate delete(pid, thing, task), to: Socket
   defdelegate delete(pid, thing, task, opts), to: Socket
-
-  ### API METHODS : FINISH ###
 end
