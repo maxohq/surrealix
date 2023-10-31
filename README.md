@@ -3,6 +3,21 @@
 Lightweight, correct and up-to-date Elixir SDK for [SurrealDB](https://surrealdb.com/docs/integration/sdks).
 The API is 100% code-generated and implements the Websocket protocol as documented here - [WebSocket (text protocol)](https://surrealdb.com/docs/integration/websocket/text).
 
+Elixir documentation shows raw examples from the SurrealDB docs, so that it's very clear what happens behind the covers.
+
+## Usage
+
+```elixir
+{:ok, pid} = Surrealix.start_link(namespace: "test", database: "test", debug: [:trace])
+Surrealix.signin(pid, %{user: "root", pass: "root"})
+Surrealix.use(pid, "test", "test")
+
+Surrealix.query(pid, "SELECT * FROM type::table($table);", %{table: "person"})
+Surrealix.live(pid, "users", true)
+
+## try running following query in the SurrealDB shell: `create users:1 set name = "John"`
+```
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
