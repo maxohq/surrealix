@@ -56,12 +56,7 @@ defmodule Surrealix.Socket do
     # IO.inspect(state, label: "state")
     task = Keyword.get(state, :__receiver__)
 
-    Process.send(
-      task.pid,
-      {:ok, msg |> Jason.decode!()},
-      []
-    )
-
+    Process.send(task.pid, {:ok, Jason.decode!(msg)}, [])
     {:ok, state}
   end
 
