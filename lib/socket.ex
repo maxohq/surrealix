@@ -1,12 +1,123 @@
-## **** GENERATED CODE! see gen/src/TopGenerator.ts for details. ****
+## **** GENERATED CODE! see gen/src/SocketGenerator.ts for details. ****
 
-defmodule Surrealix do
-  alias Surrealix.Socket, as: Socket
+defmodule Surrealix.Socket do
+  use WebSockex
   
-  defdelegate start_link(), to: Socket
-  defdelegate start_link(opts), to: Socket
+  @type socket_opts :: [
+          hostname: String.t(),
+          port: integer(),
+          namespace: String.t(),
+          database: String.t(),
+          username: String.t(),
+          password: String.t()
+        ]
   
-  defdelegate stop(pid), to: Socket
+  @type base_connection_opts :: socket_opts()
+  @base_connection_opts Application.compile_env(:surrealix, :connection,
+                          hostname: "localhost",
+                          port: 8000,
+                          namespace: "default",
+                          database: "default",
+                          username: "root",
+                          password: "root"
+                        )
+  
+  @spec start_link(socket_opts()) :: WebSockex.on_start()
+  def start_link(opts \\ []) do
+    opts =
+      Keyword.merge(
+        @base_connection_opts,
+        opts
+      )
+  
+    hostname = Keyword.get(opts, :hostname)
+    port = Keyword.get(opts, :port)
+  
+    WebSockex.start_link("ws://#{hostname}:#{port}/rpc", __MODULE__, opts)
+  end
+  
+  @spec stop(pid()) :: :ok
+  def stop(pid) do
+    Process.exit(pid, :kill)
+    :ok
+  end
+  
+  def handle_cast(caller, _state) do
+    {method, args} = caller
+  
+    payload = build_cast_payload(method, args)
+  
+    frame = {:text, payload}
+    {:reply, frame, args}
+  end
+  
+  def handle_frame({type, msg}, state) do
+    # IO.inspect({"HANDLE_FRAME", type, msg})
+    # IO.inspect(state, label: "state")
+    task = Keyword.get(state, :__receiver__)
+  
+    Process.send(
+      task.pid,
+      {:ok, msg |> Jason.decode!()},
+      []
+    )
+  
+    {:ok, state}
+  end
+  
+  defp exec_method(pid, {method, args}, opts \\ []) do
+    task =
+      Task.async(fn ->
+        receive do
+          {:ok, msg} ->
+            if is_map(msg) and Map.has_key?(msg, "error"), do: {:error, msg}, else: {:ok, msg}
+  
+          {:error, reason} ->
+            {:error, reason}
+  
+          _ ->
+            {:error, "Unknown Error"}
+        end
+      end)
+  
+    WebSockex.cast(pid, {method, Keyword.merge([__receiver__: task], args)})
+  
+    task_timeout = Keyword.get(opts, :timeout, :infinity)
+    Task.await(task, task_timeout)
+  end
+  
+  defp task_opts_default, do: [timeout: :infinity]
+  
+  defp build_cast_payload(method, args) do
+    params =
+      case method do
+        "use" -> [args[:ns], args[:db]]
+        "info" -> []
+        "signup" -> [args[:payload]]
+        "signin" -> [args[:payload]]
+        "authenticate" -> [args[:token]]
+        "invalidate" -> []
+        "let" -> [args[:name], args[:value]]
+        "unset" -> [args[:name]]
+        "live" -> [args[:table], args[:diff]]
+        "kill" -> [args[:queryUuid]]
+        "query" -> [args[:sql], args[:vars]]
+        "select" -> [args[:thing]]
+        "create" -> [args[:thing], args[:data]]
+        "insert" -> [args[:thing], args[:data]]
+        "update" -> [args[:thing], args[:data]]
+        "merge" -> [args[:thing], args[:data]]
+        "patch" -> [args[:thing], args[:patches], args[:diff]]
+        "delete" -> [args[:thing]]
+      end
+      
+    %{
+      "id" => :rand.uniform(9999) |> to_string(),
+      "method" => method,
+      "params" => params
+    }
+    |> Jason.encode!()
+  end
   
   ### API METHODS : START ###
   @doc """
@@ -29,9 +140,13 @@ defmodule Surrealix do
       "result": null
     }
   """
-  defdelegate use(pid, ns, db), to: Socket
-  defdelegate use(pid, ns, db, task), to: Socket
-  defdelegate use(pid, ns, db, task, opts), to: Socket
+  def use(pid, ns, db) do
+    exec_method(pid, {"use", [ns: ns, db: db]})
+  end
+  
+  def use(pid, ns, db, task, opts \\ task_opts_default()) do
+    exec_method(pid, {"use", [ns: ns, db: db, __receiver__: task]}, opts)
+  end
   
   @doc """
   info
@@ -52,7 +167,13 @@ defmodule Surrealix do
       }
     }
   """
-  defdelegate info(pid), to: Socket
+  def info(pid) do
+    exec_method(pid, {"info", []})
+  end
+  
+  def info(pid, task, opts \\ task_opts_default()) do
+    exec_method(pid, {"info", [__receiver__: task]}, opts)
+  end
   
   @doc """
   signup [ NS, DB, SC, ... ]
@@ -79,9 +200,13 @@ defmodule Surrealix do
       "result": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTdXJyZWFsREIiLCJpYXQiOjE1MTYyMzkwMjIsIm5iZiI6MTUxNjIzOTAyMiwiZXhwIjoxODM2NDM5MDIyLCJOUyI6InRlc3QiLCJEQiI6InRlc3QiLCJTQyI6InVzZXIiLCJJRCI6InVzZXI6dG9iaWUifQ.N22Gp9ze0rdR06McGj1G-h2vu6a6n9IVqUbMFJlOxxA"
     }
   """
-  defdelegate signup(pid, payload), to: Socket
-  defdelegate signup(pid, payload, task), to: Socket
-  defdelegate signup(pid, payload, task, opts), to: Socket
+  def signup(pid, payload) do
+    exec_method(pid, {"signup", [payload: payload]})
+  end
+  
+  def signup(pid, payload, task, opts \\ task_opts_default()) do
+    exec_method(pid, {"signup", [payload: payload, __receiver__: task]}, opts)
+  end
   
   @doc """
   signin [ NS, DB, SC, ... ]
@@ -128,9 +253,13 @@ defmodule Surrealix do
       "result": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTdXJyZWFsREIiLCJpYXQiOjE1MTYyMzkwMjIsIm5iZiI6MTUxNjIzOTAyMiwiZXhwIjoxODM2NDM5MDIyLCJOUyI6InRlc3QiLCJEQiI6InRlc3QiLCJTQyI6InVzZXIiLCJJRCI6InVzZXI6dG9iaWUifQ.N22Gp9ze0rdR06McGj1G-h2vu6a6n9IVqUbMFJlOxxA"
     }
   """
-  defdelegate signin(pid, payload), to: Socket
-  defdelegate signin(pid, payload, task), to: Socket
-  defdelegate signin(pid, payload, task, opts), to: Socket
+  def signin(pid, payload) do
+    exec_method(pid, {"signin", [payload: payload]})
+  end
+  
+  def signin(pid, payload, task, opts \\ task_opts_default()) do
+    exec_method(pid, {"signin", [payload: payload, __receiver__: task]}, opts)
+  end
   
   @doc """
   authenticate [ token ]
@@ -151,9 +280,13 @@ defmodule Surrealix do
       "result": null
     }
   """
-  defdelegate authenticate(pid, token), to: Socket
-  defdelegate authenticate(pid, token, task), to: Socket
-  defdelegate authenticate(pid, token, task, opts), to: Socket
+  def authenticate(pid, token) do
+    exec_method(pid, {"authenticate", [token: token]})
+  end
+  
+  def authenticate(pid, token, task, opts \\ task_opts_default()) do
+    exec_method(pid, {"authenticate", [token: token, __receiver__: task]}, opts)
+  end
   
   @doc """
   invalidate
@@ -171,7 +304,13 @@ defmodule Surrealix do
       "result": null
     }
   """
-  defdelegate invalidate(pid), to: Socket
+  def invalidate(pid) do
+    exec_method(pid, {"invalidate", []})
+  end
+  
+  def invalidate(pid, task, opts \\ task_opts_default()) do
+    exec_method(pid, {"invalidate", [__receiver__: task]}, opts)
+  end
   
   @doc """
   let [ name, value ]
@@ -193,9 +332,13 @@ defmodule Surrealix do
       "result": null
     }
   """
-  defdelegate let(pid, name, value), to: Socket
-  defdelegate let(pid, name, value, task), to: Socket
-  defdelegate let(pid, name, value, task, opts), to: Socket
+  def let(pid, name, value) do
+    exec_method(pid, {"let", [name: name, value: value]})
+  end
+  
+  def let(pid, name, value, task, opts \\ task_opts_default()) do
+    exec_method(pid, {"let", [name: name, value: value, __receiver__: task]}, opts)
+  end
   
   @doc """
   unset [ name ]
@@ -216,9 +359,13 @@ defmodule Surrealix do
       "result": null
     }
   """
-  defdelegate unset(pid, name), to: Socket
-  defdelegate unset(pid, name, task), to: Socket
-  defdelegate unset(pid, name, task, opts), to: Socket
+  def unset(pid, name) do
+    exec_method(pid, {"unset", [name: name]})
+  end
+  
+  def unset(pid, name, task, opts \\ task_opts_default()) do
+    exec_method(pid, {"unset", [name: name, __receiver__: task]}, opts)
+  end
   
   @doc """
   live [ table ]
@@ -255,9 +402,13 @@ defmodule Surrealix do
       }
     }
   """
-  defdelegate live(pid, table, diff), to: Socket
-  defdelegate live(pid, table, diff, task), to: Socket
-  defdelegate live(pid, table, diff, task, opts), to: Socket
+  def live(pid, table, diff \\ false) do
+    exec_method(pid, {"live", [table: table, diff: diff]})
+  end
+  
+  def live(pid, table, diff, task, opts \\ task_opts_default()) do
+    exec_method(pid, {"live", [table: table, diff: diff, __receiver__: task]}, opts)
+  end
   
   @doc """
   kill [ queryUuid ]
@@ -278,9 +429,13 @@ defmodule Surrealix do
       "result": null
     }
   """
-  defdelegate kill(pid, queryUuid), to: Socket
-  defdelegate kill(pid, queryUuid, task), to: Socket
-  defdelegate kill(pid, queryUuid, task, opts), to: Socket
+  def kill(pid, queryUuid) do
+    exec_method(pid, {"kill", [queryUuid: queryUuid]})
+  end
+  
+  def kill(pid, queryUuid, task, opts \\ task_opts_default()) do
+    exec_method(pid, {"kill", [queryUuid: queryUuid, __receiver__: task]}, opts)
+  end
   
   @doc """
   query [ sql, vars ]
@@ -325,9 +480,13 @@ defmodule Surrealix do
       ]
     }
   """
-  defdelegate query(pid, sql, vars), to: Socket
-  defdelegate query(pid, sql, vars, task), to: Socket
-  defdelegate query(pid, sql, vars, task, opts), to: Socket
+  def query(pid, sql, vars \\ %{}) do
+    exec_method(pid, {"query", [sql: sql, vars: vars]})
+  end
+  
+  def query(pid, sql, vars, task, opts \\ task_opts_default()) do
+    exec_method(pid, {"query", [sql: sql, vars: vars, __receiver__: task]}, opts)
+  end
   
   @doc """
   select [ thing ]
@@ -353,9 +512,13 @@ defmodule Surrealix do
       ]
     }
   """
-  defdelegate select(pid, thing), to: Socket
-  defdelegate select(pid, thing, task), to: Socket
-  defdelegate select(pid, thing, task, opts), to: Socket
+  def select(pid, thing) do
+    exec_method(pid, {"select", [thing: thing]})
+  end
+  
+  def select(pid, thing, task, opts \\ task_opts_default()) do
+    exec_method(pid, {"select", [thing: thing, __receiver__: task]}, opts)
+  end
   
   @doc """
   create [ thing, data ]
@@ -384,9 +547,13 @@ defmodule Surrealix do
       ]
     }
   """
-  defdelegate create(pid, thing, data), to: Socket
-  defdelegate create(pid, thing, data, task), to: Socket
-  defdelegate create(pid, thing, data, task, opts), to: Socket
+  def create(pid, thing, data \\ %{}) do
+    exec_method(pid, {"create", [thing: thing, data: data]})
+  end
+  
+  def create(pid, thing, data, task, opts \\ task_opts_default()) do
+    exec_method(pid, {"create", [thing: thing, data: data, __receiver__: task]}, opts)
+  end
   
   @doc """
   insert [ thing, data ]
@@ -449,9 +616,13 @@ defmodule Surrealix do
       ]
     }
   """
-  defdelegate insert(pid, thing, data), to: Socket
-  defdelegate insert(pid, thing, data, task), to: Socket
-  defdelegate insert(pid, thing, data, task, opts), to: Socket
+  def insert(pid, thing, data \\ %{}) do
+    exec_method(pid, {"insert", [thing: thing, data: data]})
+  end
+  
+  def insert(pid, thing, data, task, opts \\ task_opts_default()) do
+    exec_method(pid, {"insert", [thing: thing, data: data, __receiver__: task]}, opts)
+  end
   
   @doc """
   update [ thing, data ]
@@ -478,9 +649,13 @@ defmodule Surrealix do
       }
     }
   """
-  defdelegate update(pid, thing, data), to: Socket
-  defdelegate update(pid, thing, data, task), to: Socket
-  defdelegate update(pid, thing, data, task, opts), to: Socket
+  def update(pid, thing, data \\ %{}) do
+    exec_method(pid, {"update", [thing: thing, data: data]})
+  end
+  
+  def update(pid, thing, data, task, opts \\ task_opts_default()) do
+    exec_method(pid, {"update", [thing: thing, data: data, __receiver__: task]}, opts)
+  end
   
   @doc """
   merge [ thing, data ]
@@ -515,9 +690,13 @@ defmodule Surrealix do
       ]
     }
   """
-  defdelegate merge(pid, thing, data), to: Socket
-  defdelegate merge(pid, thing, data, task), to: Socket
-  defdelegate merge(pid, thing, data, task, opts), to: Socket
+  def merge(pid, thing, data \\ %{}) do
+    exec_method(pid, {"merge", [thing: thing, data: data]})
+  end
+  
+  def merge(pid, thing, data, task, opts \\ task_opts_default()) do
+    exec_method(pid, {"merge", [thing: thing, data: data, __receiver__: task]}, opts)
+  end
   
   @doc """
   patch [ thing, patches, diff ]
@@ -560,9 +739,13 @@ defmodule Surrealix do
       ]
     }
   """
-  defdelegate patch(pid, thing, patches, diff), to: Socket
-  defdelegate patch(pid, thing, patches, diff, task), to: Socket
-  defdelegate patch(pid, thing, patches, diff, task, opts), to: Socket
+  def patch(pid, thing, patches, diff \\ false) do
+    exec_method(pid, {"patch", [thing: thing, patches: patches, diff: diff]})
+  end
+  
+  def patch(pid, thing, patches, diff, task, opts \\ task_opts_default()) do
+    exec_method(pid, {"patch", [thing: thing, patches: patches, diff: diff, __receiver__: task]}, opts)
+  end
   
   @doc """
   delete [ thing ]
@@ -588,9 +771,13 @@ defmodule Surrealix do
       }
     }
   """
-  defdelegate delete(pid, thing), to: Socket
-  defdelegate delete(pid, thing, task), to: Socket
-  defdelegate delete(pid, thing, task, opts), to: Socket
+  def delete(pid, thing) do
+    exec_method(pid, {"delete", [thing: thing]})
+  end
+  
+  def delete(pid, thing, task, opts \\ task_opts_default()) do
+    exec_method(pid, {"delete", [thing: thing, __receiver__: task]}, opts)
+  end
   
   ### API METHODS : FINISH ###
 end
