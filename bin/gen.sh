@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
-bun run gen/index.ts
+pushd gen
+bun run index.ts
+popd
 mix format
