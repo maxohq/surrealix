@@ -102,6 +102,11 @@ export class SocketGenerator extends GenBase {
       :ok
     end
 
+    def terminate(reason, state) do
+      IO.puts("Socket Terminating:\\n#{inspect(reason)}\\n\\n#{inspect(state)}\\n")
+      exit(:normal)
+    end
+
     def handle_cast(caller, _state) do
       {method, args} = caller
 
