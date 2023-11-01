@@ -39,3 +39,10 @@ be found at <https://hexdocs.pm/surrealix>.
 ## Aknowledgements
 
 Code foundation was taken from https://github.com/joojscript/surrealdb_ex. Since this package has not received any commits in the last 7 months (2023-10-31) and the issues are left uncommented, I have assumed that the maintainer is not interested in any contributions.
+
+## Ref
+
+- [Websocket Text Protocol](https://surrealdb.com/docs/integration/websocket/text)
+- [Source code for the Websocket Text Protocol docs](https://github.com/surrealdb/www.surrealdb.com/blob/main/app/templates/docs/integration/websocket/text.hbs)
+- [SurrealDB SQL statements](https://surrealdb.com/docs/surrealql/statements)
+- [SurrealDB functions](https://surrealdb.com/docs/surrealql/functions)
