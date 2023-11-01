@@ -42,7 +42,16 @@ Code foundation was taken from https://github.com/joojscript/surrealdb_ex. Since
 
 ## Ref
 
+- [Websockex callbacks (Elixir)](https://github.com/Azolo/websockex/blob/master/lib/websockex.ex)
 - [Websocket Text Protocol](https://surrealdb.com/docs/integration/websocket/text)
 - [Source code for the Websocket Text Protocol docs](https://github.com/surrealdb/www.surrealdb.com/blob/main/app/templates/docs/integration/websocket/text.hbs)
 - [SurrealDB SQL statements](https://surrealdb.com/docs/surrealql/statements)
 - [SurrealDB functions](https://surrealdb.com/docs/surrealql/functions)
+
+## Todo
+
+- [ ] handle disconnects gracefully
+- [ ] handle live query updates properly
+- [ ] debug modus with verbose logging
+- [ ] integration tests
+- [ ] benchmarks
