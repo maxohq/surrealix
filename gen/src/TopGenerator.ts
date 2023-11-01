@@ -63,14 +63,18 @@ export class TopGenerator extends GenBase {
       this.push(`defdelegate ${method.name}(pid), to: Socket`);
     }
     if (method.parameter.length > 0) {
-      let params = method.parameter
+      // ONLY possible to have default values for optional args in a direct call.
+      let directParams = method.parameter
         .map((param) => {
-          return param.name;
-
-          // return `${param.name} \\\\ ${param.default}`;
+          if (param.must) {
+            return param.name;
+          }
+          return `${param.name} \\\\ ${param.default}`;
         })
         .join(", ");
-      this.push(`defdelegate ${method.name}(pid, ${params}), to: Socket`);
+
+      let params = method.parameter.map((param) => param.name).join(", ");
+      this.push(`defdelegate ${method.name}(pid, ${directParams}), to: Socket`);
       this.push(`defdelegate ${method.name}(pid, ${params}, task), to: Socket`);
       this.push(
         `defdelegate ${method.name}(pid, ${params}, task, opts), to: Socket`

@@ -254,7 +254,7 @@ defmodule Surrealix do
       }
     }
   """
-  defdelegate live(pid, table, diff), to: Socket
+  defdelegate live(pid, table, diff \\ false), to: Socket
   defdelegate live(pid, table, diff, task), to: Socket
   defdelegate live(pid, table, diff, task, opts), to: Socket
 
@@ -324,7 +324,7 @@ defmodule Surrealix do
       ]
     }
   """
-  defdelegate query(pid, sql, vars), to: Socket
+  defdelegate query(pid, sql, vars \\ %{}), to: Socket
   defdelegate query(pid, sql, vars, task), to: Socket
   defdelegate query(pid, sql, vars, task, opts), to: Socket
 
@@ -383,7 +383,7 @@ defmodule Surrealix do
       ]
     }
   """
-  defdelegate create(pid, thing, data), to: Socket
+  defdelegate create(pid, thing, data \\ %{}), to: Socket
   defdelegate create(pid, thing, data, task), to: Socket
   defdelegate create(pid, thing, data, task, opts), to: Socket
 
@@ -448,7 +448,7 @@ defmodule Surrealix do
       ]
     }
   """
-  defdelegate insert(pid, thing, data), to: Socket
+  defdelegate insert(pid, thing, data \\ %{}), to: Socket
   defdelegate insert(pid, thing, data, task), to: Socket
   defdelegate insert(pid, thing, data, task, opts), to: Socket
 
@@ -477,7 +477,7 @@ defmodule Surrealix do
       }
     }
   """
-  defdelegate update(pid, thing, data), to: Socket
+  defdelegate update(pid, thing, data \\ %{}), to: Socket
   defdelegate update(pid, thing, data, task), to: Socket
   defdelegate update(pid, thing, data, task, opts), to: Socket
 
@@ -514,7 +514,7 @@ defmodule Surrealix do
       ]
     }
   """
-  defdelegate merge(pid, thing, data), to: Socket
+  defdelegate merge(pid, thing, data \\ %{}), to: Socket
   defdelegate merge(pid, thing, data, task), to: Socket
   defdelegate merge(pid, thing, data, task, opts), to: Socket
 
@@ -559,7 +559,7 @@ defmodule Surrealix do
       ]
     }
   """
-  defdelegate patch(pid, thing, patches, diff), to: Socket
+  defdelegate patch(pid, thing, patches, diff \\ false), to: Socket
   defdelegate patch(pid, thing, patches, diff, task), to: Socket
   defdelegate patch(pid, thing, patches, diff, task, opts), to: Socket
 
