@@ -233,6 +233,9 @@ export class SocketGenerator extends GenBase {
     this.push(`@doc """`);
     this.push(`${method.preview}`);
     this.push(`  ${method.desc}`);
+    if (method.note) {
+      this.push(`  NOTE: ${method.note}`);
+    }
     method.examples.map((example) => {
       if (example.title) {
         this.push(`  ${example.title}`);

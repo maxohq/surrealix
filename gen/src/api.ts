@@ -894,6 +894,7 @@ const patchMethod: IMethod = {
 const deleteMethod: IMethod = {
   name: "delete",
   desc: "This method deletes either all records in a table or a single record",
+  note: "Notice how the deleted record is being returned here",
   preview: "delete [ thing ]",
   argType: "inline",
   parameter: [

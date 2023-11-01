@@ -365,6 +365,7 @@ defmodule Surrealix.Socket do
   @doc """
   live [ table ]
     This methods initiates a live query for a specified table name
+    NOTE: For more advanced live queries where filters are needed, use the Query method to initiate a custom live query.
 
     Example request:
       {
@@ -622,6 +623,7 @@ defmodule Surrealix.Socket do
   @doc """
   update [ thing, data ]
     This method replaces either all records in a table or a single record with specified data
+    NOTE: This function replaces the current document / record data with the specified data. If no replacement data is passed it will simply trigger an update.
 
     Example request:
       {
@@ -655,6 +657,7 @@ defmodule Surrealix.Socket do
   @doc """
   merge [ thing, data ]
     This method merges specified data into either all records in a table or a single record
+    NOTE: This function merges the current document / record data with the specified data. If no merge data is passed it will simply trigger an update.
 
     Example request:
       {
@@ -696,6 +699,7 @@ defmodule Surrealix.Socket do
   @doc """
   patch [ thing, patches, diff ]
     This method patches either all records in a table or a single record with specified patches
+    NOTE: This function patches the current document / record data with the specified JSON Patch data.
 
     Example request:
       {
@@ -749,6 +753,7 @@ defmodule Surrealix.Socket do
   @doc """
   delete [ thing ]
     This method deletes either all records in a table or a single record
+    NOTE: Notice how the deleted record is being returned here
 
     Example request:
       {
