@@ -44,6 +44,7 @@ Code foundation was taken from https://github.com/joojscript/surrealdb_ex. Since
 
 - [Websockex callbacks (Elixir)](https://github.com/Azolo/websockex/blob/master/lib/websockex.ex)
 - [Websocket Text Protocol](https://surrealdb.com/docs/integration/websocket/text)
+- [JS SDK for websockets](https://github.com/surrealdb/surrealdb.js/blob/main/src/strategies/websocket.ts)
 - [Source code for the Websocket Text Protocol docs](https://github.com/surrealdb/www.surrealdb.com/blob/main/app/templates/docs/integration/websocket/text.hbs)
 - [SurrealDB SQL statements](https://surrealdb.com/docs/surrealql/statements)
 - [SurrealDB functions](https://surrealdb.com/docs/surrealql/functions)
