@@ -91,6 +91,7 @@ defmodule Surrealix.Socket do
   defp build_cast_payload(method, args) do
     params =
       case method do
+        "ping" -> []
         "use" -> [args[:ns], args[:db]]
         "info" -> []
         "signup" -> [args[:payload]]
@@ -120,6 +121,30 @@ defmodule Surrealix.Socket do
   end
 
   ### API METHODS : START ###
+  @doc """
+  ping
+    This method pings the SurrealDB instance
+
+    Example request:
+    {
+      "id": 1,
+      "method": "ping"
+    }
+
+    Example response:
+    {
+      "id": 1,
+      "result": null
+    }
+  """
+  def ping(pid) do
+    exec_method(pid, {"ping", []})
+  end
+
+  def ping(pid, task, opts \\ task_opts_default()) do
+    exec_method(pid, {"ping", [__receiver__: task]}, opts)
+  end
+
   @doc """
   use [ ns, db ]
     Specifies the namespace and database for the current connection

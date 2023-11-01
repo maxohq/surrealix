@@ -68,6 +68,32 @@ const useMethod: IMethod = {
   ],
 };
 
+const pingMethod: IMethod = {
+  name: "ping",
+  desc: "This method pings the SurrealDB instance",
+  preview: "ping",
+  argType: "inline",
+  parameter: [],
+  examples: [
+    {
+      req: {
+        data: {
+          id: 1,
+          method: "ping",
+        },
+      },
+
+      res: {
+        desc: "",
+        data: {
+          id: 1,
+          result: null,
+        },
+      },
+    },
+  ],
+};
+
 const infoMethod: IMethod = {
   name: "info",
   desc: "This method returns the record of an authenticated scope user.",
@@ -933,6 +959,7 @@ const deleteMethod: IMethod = {
 
 export const api = {
   methods: [
+    pingMethod,
     useMethod,
     infoMethod,
     signupMethod,

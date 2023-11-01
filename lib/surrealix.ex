@@ -9,6 +9,24 @@ defmodule Surrealix do
   defdelegate stop(pid), to: Socket
 
   @doc """
+  ping
+    This method pings the SurrealDB instance
+
+    Example request:
+    {
+      "id": 1,
+      "method": "ping"
+    }
+
+    Example response:
+    {
+      "id": 1,
+      "result": null
+    }
+  """
+  defdelegate ping(pid), to: Socket
+
+  @doc """
   use [ ns, db ]
     Specifies the namespace and database for the current connection
 
