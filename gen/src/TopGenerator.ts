@@ -85,6 +85,9 @@ export class TopGenerator extends GenBase {
     this.push(`@doc """`);
     this.push(`${method.preview}`);
     this.push(`  ${method.desc}`);
+    if (method.note) {
+      this.push(`  NOTE: ${method.note}`);
+    }
     method.examples.map((example) => {
       if (example.title) {
         this.push(`  ${example.title}`);
@@ -92,11 +95,13 @@ export class TopGenerator extends GenBase {
       this.push(``);
       this.push(`  Example request:`);
       let str = JSON.stringify(example.req.data, null, 2);
-      this.plainPush(lpad(str, "    "));
+      str = lpad(str, "    ");
+      this.plainPush(str);
       this.push(``);
       this.push(`  Example response:`);
       str = JSON.stringify(example.res.data, null, 2);
-      this.plainPush(lpad(str, "    "));
+      str = lpad(str, "    ");
+      this.plainPush(str);
     });
     this.push(`"""`);
   }

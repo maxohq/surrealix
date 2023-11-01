@@ -120,7 +120,7 @@ defmodule Surrealix.Socket do
     Specifies the namespace and database for the current connection
 
     Example request:
-      {
+    {
       "id": 1,
       "method": "use",
       "params": [
@@ -130,7 +130,7 @@ defmodule Surrealix.Socket do
     }
 
     Example response:
-      {
+    {
       "id": 1,
       "result": null
     }
@@ -148,13 +148,13 @@ defmodule Surrealix.Socket do
     This method returns the record of an authenticated scope user.
 
     Example request:
-      {
+    {
       "id": 1,
       "method": "info"
     }
 
     Example response:
-      {
+    {
       "id": 1,
       "result": {
         "id": "user:john",
@@ -175,7 +175,7 @@ defmodule Surrealix.Socket do
     This method allows you to signup a user against a scope's SIGNUP method
 
     Example request:
-      {
+    {
       "id": 1,
       "method": "signup",
       "params": [
@@ -190,7 +190,7 @@ defmodule Surrealix.Socket do
     }
 
     Example response:
-      {
+    {
       "id": 1,
       "result": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTdXJyZWFsREIiLCJpYXQiOjE1MTYyMzkwMjIsIm5iZiI6MTUxNjIzOTAyMiwiZXhwIjoxODM2NDM5MDIyLCJOUyI6InRlc3QiLCJEQiI6InRlc3QiLCJTQyI6InVzZXIiLCJJRCI6InVzZXI6dG9iaWUifQ.N22Gp9ze0rdR06McGj1G-h2vu6a6n9IVqUbMFJlOxxA"
     }
@@ -209,7 +209,7 @@ defmodule Surrealix.Socket do
     As Root
 
     Example request:
-      {
+    {
       "id": 1,
       "method": "signin",
       "params": [
@@ -221,14 +221,14 @@ defmodule Surrealix.Socket do
     }
 
     Example response:
-      {
+    {
       "id": 1,
       "result": null
     }
     Signin as scope
 
     Example request:
-      {
+    {
       "id": 1,
       "method": "signin",
       "params": [
@@ -243,7 +243,7 @@ defmodule Surrealix.Socket do
     }
 
     Example response:
-      {
+    {
       "id": 1,
       "result": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTdXJyZWFsREIiLCJpYXQiOjE1MTYyMzkwMjIsIm5iZiI6MTUxNjIzOTAyMiwiZXhwIjoxODM2NDM5MDIyLCJOUyI6InRlc3QiLCJEQiI6InRlc3QiLCJTQyI6InVzZXIiLCJJRCI6InVzZXI6dG9iaWUifQ.N22Gp9ze0rdR06McGj1G-h2vu6a6n9IVqUbMFJlOxxA"
     }
@@ -261,7 +261,7 @@ defmodule Surrealix.Socket do
     This method allows you to authenticate a user against SurrealDB with a token
 
     Example request:
-      {
+    {
       "id": 1,
       "method": "authenticate",
       "params": [
@@ -270,7 +270,7 @@ defmodule Surrealix.Socket do
     }
 
     Example response:
-      {
+    {
       "id": 1,
       "result": null
     }
@@ -288,13 +288,13 @@ defmodule Surrealix.Socket do
     This method will invalidate the user's session for the current connection
 
     Example request:
-      {
+    {
       "id": 1,
       "method": "invalidate"
     }
 
     Example response:
-      {
+    {
       "id": 1,
       "result": null
     }
@@ -312,7 +312,7 @@ defmodule Surrealix.Socket do
     This method stores a variable on the current connection
 
     Example request:
-      {
+    {
       "id": 1,
       "method": "let",
       "params": [
@@ -322,7 +322,7 @@ defmodule Surrealix.Socket do
     }
 
     Example response:
-      {
+    {
       "id": 1,
       "result": null
     }
@@ -340,7 +340,7 @@ defmodule Surrealix.Socket do
     This method removes a variable from the current connection
 
     Example request:
-      {
+    {
       "id": 1,
       "method": "unset",
       "params": [
@@ -349,7 +349,7 @@ defmodule Surrealix.Socket do
     }
 
     Example response:
-      {
+    {
       "id": 1,
       "result": null
     }
@@ -368,7 +368,7 @@ defmodule Surrealix.Socket do
     NOTE: For more advanced live queries where filters are needed, use the Query method to initiate a custom live query.
 
     Example request:
-      {
+    {
       "id": 1,
       "method": "live",
       "params": [
@@ -377,17 +377,17 @@ defmodule Surrealix.Socket do
     }
 
     Example response:
-      {
+    {
       "id": 1,
       "result": "0189d6e3-8eac-703a-9a48-d9faa78b44b9"
     }
     Live notification
 
     Example request:
-      {}
+    {}
 
     Example response:
-      {
+    {
       "result": {
         "action": "CREATE",
         "id": "0189d6e3-8eac-703a-9a48-d9faa78b44b9",
@@ -411,7 +411,7 @@ defmodule Surrealix.Socket do
     This methods kills an active live query
 
     Example request:
-      {
+    {
       "id": 1,
       "method": "kill",
       "params": [
@@ -420,7 +420,7 @@ defmodule Surrealix.Socket do
     }
 
     Example response:
-      {
+    {
       "id": 1,
       "result": null
     }
@@ -438,7 +438,7 @@ defmodule Surrealix.Socket do
     This method executes a custom query against SurrealDB
 
     Example request:
-      {
+    {
       "id": 1,
       "method": "query",
       "params": [
@@ -450,7 +450,7 @@ defmodule Surrealix.Socket do
     }
 
     Example response:
-      {
+    {
       "id": 1,
       "result": [
         {
@@ -489,7 +489,7 @@ defmodule Surrealix.Socket do
     This method selects either all records in a table or a single record
 
     Example request:
-      {
+    {
       "id": 1,
       "method": "select",
       "params": [
@@ -498,7 +498,7 @@ defmodule Surrealix.Socket do
     }
 
     Example response:
-      {
+    {
       "id": 1,
       "result": [
         {
@@ -521,7 +521,7 @@ defmodule Surrealix.Socket do
     This method creates a record either with a random or specified ID
 
     Example request:
-      {
+    {
       "id": 1,
       "method": "create",
       "params": [
@@ -533,7 +533,7 @@ defmodule Surrealix.Socket do
     }
 
     Example response:
-      {
+    {
       "id": 1,
       "result": [
         {
@@ -557,7 +557,7 @@ defmodule Surrealix.Socket do
     Single insert
 
     Example request:
-      {
+    {
       "id": 1,
       "method": "insert",
       "params": [
@@ -569,7 +569,7 @@ defmodule Surrealix.Socket do
     }
 
     Example response:
-      {
+    {
       "id": 1,
       "result": [
         {
@@ -581,7 +581,7 @@ defmodule Surrealix.Socket do
     Bulk insert
 
     Example request:
-      {
+    {
       "id": 1,
       "method": "insert",
       "params": [
@@ -598,7 +598,7 @@ defmodule Surrealix.Socket do
     }
 
     Example response:
-      {
+    {
       "id": 1,
       "result": [
         {
@@ -626,7 +626,7 @@ defmodule Surrealix.Socket do
     NOTE: This function replaces the current document / record data with the specified data. If no replacement data is passed it will simply trigger an update.
 
     Example request:
-      {
+    {
       "id": 1,
       "method": "update",
       "params": [
@@ -638,7 +638,7 @@ defmodule Surrealix.Socket do
     }
 
     Example response:
-      {
+    {
       "id": 1,
       "result": {
         "id": "person:8s0j0bbm3ngrd5c9bx53",
@@ -660,7 +660,7 @@ defmodule Surrealix.Socket do
     NOTE: This function merges the current document / record data with the specified data. If no merge data is passed it will simply trigger an update.
 
     Example request:
-      {
+    {
       "id": 1,
       "method": "merge",
       "params": [
@@ -672,7 +672,7 @@ defmodule Surrealix.Socket do
     }
 
     Example response:
-      {
+    {
       "id": 1,
       "result": [
         {
@@ -702,7 +702,7 @@ defmodule Surrealix.Socket do
     NOTE: This function patches the current document / record data with the specified JSON Patch data.
 
     Example request:
-      {
+    {
       "id": 1,
       "method": "patch",
       "params": [
@@ -718,7 +718,7 @@ defmodule Surrealix.Socket do
     }
 
     Example response:
-      {
+    {
       "id": 1,
       "result": [
         [
@@ -756,7 +756,7 @@ defmodule Surrealix.Socket do
     NOTE: Notice how the deleted record is being returned here
 
     Example request:
-      {
+    {
       "id": 1,
       "method": "delete",
       "params": [
@@ -765,7 +765,7 @@ defmodule Surrealix.Socket do
     }
 
     Example response:
-      {
+    {
       "id": 1,
       "result": {
         "active": true,
