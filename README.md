@@ -2,7 +2,7 @@
 
 Lightweight, correct and up-to-date Elixir SDK for [SurrealDB](https://surrealdb.com/docs/integration/sdks).
 
-The API is 100% code-generated and implements the Websocket protocol as documented here - [WebSocket (text protocol)](https://surrealdb.com/docs/integration/websocket/text).
+The API is 100% code-generated (https://github.com/maxohq/surrealix/blob/main/gen/src/api.ts) and implements the Websocket protocol as documented here - [WebSocket (text protocol)](https://surrealdb.com/docs/integration/websocket/text).
 
 Elixir documentation shows raw examples from the SurrealDB docs, so that it's very clear what happens behind the covers.
 
