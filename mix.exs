@@ -1,13 +1,18 @@
 defmodule Surrealix.MixProject do
   use Mix.Project
+  @source_url "https://github.com/maxohq/surrealix"
+  @version "0.1.0"
 
   def project do
     [
       app: :surrealix,
-      version: "0.1.0",
+      version: @version,
+      source_url: @source_url,
       elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      package: package(),
+      description: description()
     ]
   end
 
@@ -24,6 +29,22 @@ defmodule Surrealix.MixProject do
       {:jason, "~> 1.4"},
       {:websockex, "~> 0.4"},
       {:ex_doc, "~> 0.30", only: [:dev]}
+    ]
+  end
+
+  defp description() do
+    "Lightweight, correct and up-to-date Elixir SDK for SurrealDB."
+  end
+
+  defp package() do
+    [
+      name: "surrealix",
+      files: ~w(lib .formatter.exs mix.exs README.md),
+      licenses: ["MIT"],
+      links: %{
+        "GitHub" => @source_url,
+        "Changelog" => @source_url <> "/blob/main/CHANGELOG.md"
+      }
     ]
   end
 end
