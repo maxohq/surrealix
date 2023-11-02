@@ -22,7 +22,8 @@ defmodule Surrealix.MixProject do
   defp deps do
     [
       {:jason, "~> 1.4"},
-      {:websockex, "~> 0.4"}
+      {:websockex, "~> 0.4"},
+      {:ex_doc, "~> 0.30", only: [:dev]}
     ]
   end
 end
