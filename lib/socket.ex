@@ -116,16 +116,16 @@ defmodule Surrealix.Socket do
     This method pings the SurrealDB instance
 
     Example request:
-    {
-      "id": 1,
-      "method": "ping"
-    }
+      {
+        "id": 1,
+        "method": "ping"
+      }
 
     Example response:
-    {
-      "id": 1,
-      "result": null
-    }
+      {
+        "id": 1,
+        "result": null
+      }
   """
   def ping(pid) do
     exec_method(pid, {"ping", []})
@@ -140,20 +140,20 @@ defmodule Surrealix.Socket do
     Specifies the namespace and database for the current connection
 
     Example request:
-    {
-      "id": 1,
-      "method": "use",
-      "params": [
-        "surrealdb",
-        "docs"
-      ]
-    }
+      {
+        "id": 1,
+        "method": "use",
+        "params": [
+          "surrealdb",
+          "docs"
+        ]
+      }
 
     Example response:
-    {
-      "id": 1,
-      "result": null
-    }
+      {
+        "id": 1,
+        "result": null
+      }
   """
   def use(pid, ns, db) do
     exec_method(pid, {"use", [ns: ns, db: db]})
@@ -168,19 +168,19 @@ defmodule Surrealix.Socket do
     This method returns the record of an authenticated scope user.
 
     Example request:
-    {
-      "id": 1,
-      "method": "info"
-    }
+      {
+        "id": 1,
+        "method": "info"
+      }
 
     Example response:
-    {
-      "id": 1,
-      "result": {
-        "id": "user:john",
-        "name": "John Doe"
+      {
+        "id": 1,
+        "result": {
+          "id": "user:john",
+          "name": "John Doe"
+        }
       }
-    }
   """
   def info(pid) do
     exec_method(pid, {"info", []})
@@ -195,25 +195,25 @@ defmodule Surrealix.Socket do
     This method allows you to signup a user against a scope's SIGNUP method
 
     Example request:
-    {
-      "id": 1,
-      "method": "signup",
-      "params": [
-        {
-          "NS": "surrealdb",
-          "DB": "docs",
-          "SC": "commenter",
-          "username": "johndoe",
-          "password": "SuperStrongPassword!"
-        }
-      ]
-    }
+      {
+        "id": 1,
+        "method": "signup",
+        "params": [
+          {
+            "NS": "surrealdb",
+            "DB": "docs",
+            "SC": "commenter",
+            "username": "johndoe",
+            "password": "SuperStrongPassword!"
+          }
+        ]
+      }
 
     Example response:
-    {
-      "id": 1,
-      "result": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTdXJyZWFsREIiLCJpYXQiOjE1MTYyMzkwMjIsIm5iZiI6MTUxNjIzOTAyMiwiZXhwIjoxODM2NDM5MDIyLCJOUyI6InRlc3QiLCJEQiI6InRlc3QiLCJTQyI6InVzZXIiLCJJRCI6InVzZXI6dG9iaWUifQ.N22Gp9ze0rdR06McGj1G-h2vu6a6n9IVqUbMFJlOxxA"
-    }
+      {
+        "id": 1,
+        "result": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTdXJyZWFsREIiLCJpYXQiOjE1MTYyMzkwMjIsIm5iZiI6MTUxNjIzOTAyMiwiZXhwIjoxODM2NDM5MDIyLCJOUyI6InRlc3QiLCJEQiI6InRlc3QiLCJTQyI6InVzZXIiLCJJRCI6InVzZXI6dG9iaWUifQ.N22Gp9ze0rdR06McGj1G-h2vu6a6n9IVqUbMFJlOxxA"
+      }
   """
   def signup(pid, payload) do
     exec_method(pid, {"signup", [payload: payload]})
@@ -229,44 +229,44 @@ defmodule Surrealix.Socket do
     As Root
 
     Example request:
-    {
-      "id": 1,
-      "method": "signin",
-      "params": [
-        {
-          "user": "tobie",
-          "pass": "3xtr3m3ly-s3cur3-p@ssw0rd"
-        }
-      ]
-    }
+      {
+        "id": 1,
+        "method": "signin",
+        "params": [
+          {
+            "user": "tobie",
+            "pass": "3xtr3m3ly-s3cur3-p@ssw0rd"
+          }
+        ]
+      }
 
     Example response:
-    {
-      "id": 1,
-      "result": null
-    }
+      {
+        "id": 1,
+        "result": null
+      }
     Signin as scope
 
     Example request:
-    {
-      "id": 1,
-      "method": "signin",
-      "params": [
-        {
-          "NS": "surrealdb",
-          "DB": "docs",
-          "SC": "commenter",
-          "username": "johndoe",
-          "password": "SuperStrongPassword!"
-        }
-      ]
-    }
+      {
+        "id": 1,
+        "method": "signin",
+        "params": [
+          {
+            "NS": "surrealdb",
+            "DB": "docs",
+            "SC": "commenter",
+            "username": "johndoe",
+            "password": "SuperStrongPassword!"
+          }
+        ]
+      }
 
     Example response:
-    {
-      "id": 1,
-      "result": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTdXJyZWFsREIiLCJpYXQiOjE1MTYyMzkwMjIsIm5iZiI6MTUxNjIzOTAyMiwiZXhwIjoxODM2NDM5MDIyLCJOUyI6InRlc3QiLCJEQiI6InRlc3QiLCJTQyI6InVzZXIiLCJJRCI6InVzZXI6dG9iaWUifQ.N22Gp9ze0rdR06McGj1G-h2vu6a6n9IVqUbMFJlOxxA"
-    }
+      {
+        "id": 1,
+        "result": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTdXJyZWFsREIiLCJpYXQiOjE1MTYyMzkwMjIsIm5iZiI6MTUxNjIzOTAyMiwiZXhwIjoxODM2NDM5MDIyLCJOUyI6InRlc3QiLCJEQiI6InRlc3QiLCJTQyI6InVzZXIiLCJJRCI6InVzZXI6dG9iaWUifQ.N22Gp9ze0rdR06McGj1G-h2vu6a6n9IVqUbMFJlOxxA"
+      }
   """
   def signin(pid, payload) do
     exec_method(pid, {"signin", [payload: payload]})
@@ -281,19 +281,19 @@ defmodule Surrealix.Socket do
     This method allows you to authenticate a user against SurrealDB with a token
 
     Example request:
-    {
-      "id": 1,
-      "method": "authenticate",
-      "params": [
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTdXJyZWFsREIiLCJpYXQiOjE1MTYyMzkwMjIsIm5iZiI6MTUxNjIzOTAyMiwiZXhwIjoxODM2NDM5MDIyLCJOUyI6InRlc3QiLCJEQiI6InRlc3QiLCJTQyI6InVzZXIiLCJJRCI6InVzZXI6dG9iaWUifQ.N22Gp9ze0rdR06McGj1G-h2vu6a6n9IVqUbMFJlOxxA"
-      ]
-    }
+      {
+        "id": 1,
+        "method": "authenticate",
+        "params": [
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTdXJyZWFsREIiLCJpYXQiOjE1MTYyMzkwMjIsIm5iZiI6MTUxNjIzOTAyMiwiZXhwIjoxODM2NDM5MDIyLCJOUyI6InRlc3QiLCJEQiI6InRlc3QiLCJTQyI6InVzZXIiLCJJRCI6InVzZXI6dG9iaWUifQ.N22Gp9ze0rdR06McGj1G-h2vu6a6n9IVqUbMFJlOxxA"
+        ]
+      }
 
     Example response:
-    {
-      "id": 1,
-      "result": null
-    }
+      {
+        "id": 1,
+        "result": null
+      }
   """
   def authenticate(pid, token) do
     exec_method(pid, {"authenticate", [token: token]})
@@ -308,16 +308,16 @@ defmodule Surrealix.Socket do
     This method will invalidate the user's session for the current connection
 
     Example request:
-    {
-      "id": 1,
-      "method": "invalidate"
-    }
+      {
+        "id": 1,
+        "method": "invalidate"
+      }
 
     Example response:
-    {
-      "id": 1,
-      "result": null
-    }
+      {
+        "id": 1,
+        "result": null
+      }
   """
   def invalidate(pid) do
     exec_method(pid, {"invalidate", []})
@@ -332,20 +332,20 @@ defmodule Surrealix.Socket do
     This method stores a variable on the current connection
 
     Example request:
-    {
-      "id": 1,
-      "method": "let",
-      "params": [
-        "website",
-        "https://surrealdb.com/"
-      ]
-    }
+      {
+        "id": 1,
+        "method": "let",
+        "params": [
+          "website",
+          "https://surrealdb.com/"
+        ]
+      }
 
     Example response:
-    {
-      "id": 1,
-      "result": null
-    }
+      {
+        "id": 1,
+        "result": null
+      }
   """
   def let(pid, name, value) do
     exec_method(pid, {"let", [name: name, value: value]})
@@ -360,19 +360,19 @@ defmodule Surrealix.Socket do
     This method removes a variable from the current connection
 
     Example request:
-    {
-      "id": 1,
-      "method": "unset",
-      "params": [
-        "website"
-      ]
-    }
+      {
+        "id": 1,
+        "method": "unset",
+        "params": [
+          "website"
+        ]
+      }
 
     Example response:
-    {
-      "id": 1,
-      "result": null
-    }
+      {
+        "id": 1,
+        "result": null
+      }
   """
   def unset(pid, name) do
     exec_method(pid, {"unset", [name: name]})
@@ -388,35 +388,35 @@ defmodule Surrealix.Socket do
     NOTE: For more advanced live queries where filters are needed, use the Query method to initiate a custom live query.
 
     Example request:
-    {
-      "id": 1,
-      "method": "live",
-      "params": [
-        "person"
-      ]
-    }
+      {
+        "id": 1,
+        "method": "live",
+        "params": [
+          "person"
+        ]
+      }
 
     Example response:
-    {
-      "id": 1,
-      "result": "0189d6e3-8eac-703a-9a48-d9faa78b44b9"
-    }
+      {
+        "id": 1,
+        "result": "0189d6e3-8eac-703a-9a48-d9faa78b44b9"
+      }
     Live notification
 
     Example request:
-    {}
+      {}
 
     Example response:
-    {
-      "result": {
-        "action": "CREATE",
-        "id": "0189d6e3-8eac-703a-9a48-d9faa78b44b9",
+      {
         "result": {
-          "id": "person:8s0j0bbm3ngrd5c9bx53",
-          "name": "John"
+          "action": "CREATE",
+          "id": "0189d6e3-8eac-703a-9a48-d9faa78b44b9",
+          "result": {
+            "id": "person:8s0j0bbm3ngrd5c9bx53",
+            "name": "John"
+          }
         }
       }
-    }
   """
   def live(pid, table, diff \\ false) do
     exec_method(pid, {"live", [table: table, diff: diff]})
@@ -431,19 +431,19 @@ defmodule Surrealix.Socket do
     This methods kills an active live query
 
     Example request:
-    {
-      "id": 1,
-      "method": "kill",
-      "params": [
-        "0189d6e3-8eac-703a-9a48-d9faa78b44b9"
-      ]
-    }
+      {
+        "id": 1,
+        "method": "kill",
+        "params": [
+          "0189d6e3-8eac-703a-9a48-d9faa78b44b9"
+        ]
+      }
 
     Example response:
-    {
-      "id": 1,
-      "result": null
-    }
+      {
+        "id": 1,
+        "result": null
+      }
   """
   def kill(pid, queryUuid) do
     exec_method(pid, {"kill", [queryUuid: queryUuid]})
@@ -458,43 +458,43 @@ defmodule Surrealix.Socket do
     This method executes a custom query against SurrealDB
 
     Example request:
-    {
-      "id": 1,
-      "method": "query",
-      "params": [
-        "CREATE person SET name = 'John'; SELECT * FROM type::table($tb);",
-        {
-          "tb": "person"
-        }
-      ]
-    }
+      {
+        "id": 1,
+        "method": "query",
+        "params": [
+          "CREATE person SET name = 'John'; SELECT * FROM type::table($tb);",
+          {
+            "tb": "person"
+          }
+        ]
+      }
 
     Example response:
-    {
-      "id": 1,
-      "result": [
-        {
-          "status": "OK",
-          "time": "152.5µs",
-          "result": [
-            {
-              "id": "person:8s0j0bbm3ngrd5c9bx53",
-              "name": "John"
-            }
-          ]
-        },
-        {
-          "status": "OK",
-          "time": "32.375µs",
-          "result": [
-            {
-              "id": "person:8s0j0bbm3ngrd5c9bx53",
-              "name": "John"
-            }
-          ]
-        }
-      ]
-    }
+      {
+        "id": 1,
+        "result": [
+          {
+            "status": "OK",
+            "time": "152.5µs",
+            "result": [
+              {
+                "id": "person:8s0j0bbm3ngrd5c9bx53",
+                "name": "John"
+              }
+            ]
+          },
+          {
+            "status": "OK",
+            "time": "32.375µs",
+            "result": [
+              {
+                "id": "person:8s0j0bbm3ngrd5c9bx53",
+                "name": "John"
+              }
+            ]
+          }
+        ]
+      }
   """
   def query(pid, sql, vars \\ %{}) do
     exec_method(pid, {"query", [sql: sql, vars: vars]})
@@ -509,24 +509,24 @@ defmodule Surrealix.Socket do
     This method selects either all records in a table or a single record
 
     Example request:
-    {
-      "id": 1,
-      "method": "select",
-      "params": [
-        "person"
-      ]
-    }
+      {
+        "id": 1,
+        "method": "select",
+        "params": [
+          "person"
+        ]
+      }
 
     Example response:
-    {
-      "id": 1,
-      "result": [
-        {
-          "id": "person:8s0j0bbm3ngrd5c9bx53",
-          "name": "John"
-        }
-      ]
-    }
+      {
+        "id": 1,
+        "result": [
+          {
+            "id": "person:8s0j0bbm3ngrd5c9bx53",
+            "name": "John"
+          }
+        ]
+      }
   """
   def select(pid, thing) do
     exec_method(pid, {"select", [thing: thing]})
@@ -541,27 +541,27 @@ defmodule Surrealix.Socket do
     This method creates a record either with a random or specified ID
 
     Example request:
-    {
-      "id": 1,
-      "method": "create",
-      "params": [
-        "person",
-        {
-          "name": "Mary Doe"
-        }
-      ]
-    }
+      {
+        "id": 1,
+        "method": "create",
+        "params": [
+          "person",
+          {
+            "name": "Mary Doe"
+          }
+        ]
+      }
 
     Example response:
-    {
-      "id": 1,
-      "result": [
-        {
-          "id": "person:s5fa6qp4p8ey9k5j0m9z",
-          "name": "Mary Doe"
-        }
-      ]
-    }
+      {
+        "id": 1,
+        "result": [
+          {
+            "id": "person:s5fa6qp4p8ey9k5j0m9z",
+            "name": "Mary Doe"
+          }
+        ]
+      }
   """
   def create(pid, thing, data \\ %{}) do
     exec_method(pid, {"create", [thing: thing, data: data]})
@@ -577,60 +577,60 @@ defmodule Surrealix.Socket do
     Single insert
 
     Example request:
-    {
-      "id": 1,
-      "method": "insert",
-      "params": [
-        "person",
-        {
-          "name": "Mary Doe"
-        }
-      ]
-    }
+      {
+        "id": 1,
+        "method": "insert",
+        "params": [
+          "person",
+          {
+            "name": "Mary Doe"
+          }
+        ]
+      }
 
     Example response:
-    {
-      "id": 1,
-      "result": [
-        {
-          "id": "person:s5fa6qp4p8ey9k5j0m9z",
-          "name": "Mary Doe"
-        }
-      ]
-    }
+      {
+        "id": 1,
+        "result": [
+          {
+            "id": "person:s5fa6qp4p8ey9k5j0m9z",
+            "name": "Mary Doe"
+          }
+        ]
+      }
     Bulk insert
 
     Example request:
-    {
-      "id": 1,
-      "method": "insert",
-      "params": [
-        "person",
-        [
+      {
+        "id": 1,
+        "method": "insert",
+        "params": [
+          "person",
+          [
+            {
+              "name": "Mary Doe"
+            },
+            {
+              "name": "John Doe"
+            }
+          ]
+        ]
+      }
+
+    Example response:
+      {
+        "id": 1,
+        "result": [
           {
+            "id": "person:s5fa6qp4p8ey9k5j0m9z",
             "name": "Mary Doe"
           },
           {
+            "id": "person:xtbbojcm82a97vus9x0j",
             "name": "John Doe"
           }
         ]
-      ]
-    }
-
-    Example response:
-    {
-      "id": 1,
-      "result": [
-        {
-          "id": "person:s5fa6qp4p8ey9k5j0m9z",
-          "name": "Mary Doe"
-        },
-        {
-          "id": "person:xtbbojcm82a97vus9x0j",
-          "name": "John Doe"
-        }
-      ]
-    }
+      }
   """
   def insert(pid, thing, data \\ %{}) do
     exec_method(pid, {"insert", [thing: thing, data: data]})
@@ -646,25 +646,25 @@ defmodule Surrealix.Socket do
     NOTE: This function replaces the current document / record data with the specified data. If no replacement data is passed it will simply trigger an update.
 
     Example request:
-    {
-      "id": 1,
-      "method": "update",
-      "params": [
-        "person:8s0j0bbm3ngrd5c9bx53",
-        {
-          "name": "John Doe"
-        }
-      ]
-    }
+      {
+        "id": 1,
+        "method": "update",
+        "params": [
+          "person:8s0j0bbm3ngrd5c9bx53",
+          {
+            "name": "John Doe"
+          }
+        ]
+      }
 
     Example response:
-    {
-      "id": 1,
-      "result": {
-        "id": "person:8s0j0bbm3ngrd5c9bx53",
-        "name": "John Doe"
+      {
+        "id": 1,
+        "result": {
+          "id": "person:8s0j0bbm3ngrd5c9bx53",
+          "name": "John Doe"
+        }
       }
-    }
   """
   def update(pid, thing, data \\ %{}) do
     exec_method(pid, {"update", [thing: thing, data: data]})
@@ -680,33 +680,33 @@ defmodule Surrealix.Socket do
     NOTE: This function merges the current document / record data with the specified data. If no merge data is passed it will simply trigger an update.
 
     Example request:
-    {
-      "id": 1,
-      "method": "merge",
-      "params": [
-        "person",
-        {
-          "active": true
-        }
-      ]
-    }
+      {
+        "id": 1,
+        "method": "merge",
+        "params": [
+          "person",
+          {
+            "active": true
+          }
+        ]
+      }
 
     Example response:
-    {
-      "id": 1,
-      "result": [
-        {
-          "active": true,
-          "id": "person:8s0j0bbm3ngrd5c9bx53",
-          "name": "John Doe"
-        },
-        {
-          "active": true,
-          "id": "person:s5fa6qp4p8ey9k5j0m9z",
-          "name": "Mary Doe"
-        }
-      ]
-    }
+      {
+        "id": 1,
+        "result": [
+          {
+            "active": true,
+            "id": "person:8s0j0bbm3ngrd5c9bx53",
+            "name": "John Doe"
+          },
+          {
+            "active": true,
+            "id": "person:s5fa6qp4p8ey9k5j0m9z",
+            "name": "Mary Doe"
+          }
+        ]
+      }
   """
   def merge(pid, thing, data \\ %{}) do
     exec_method(pid, {"merge", [thing: thing, data: data]})
@@ -722,41 +722,41 @@ defmodule Surrealix.Socket do
     NOTE: This function patches the current document / record data with the specified JSON Patch data.
 
     Example request:
-    {
-      "id": 1,
-      "method": "patch",
-      "params": [
-        "person",
-        [
-          {
-            "op": "replace",
-            "path": "/last_updated",
-            "value": "2023-06-16T08:34:25Z"
-          }
+      {
+        "id": 1,
+        "method": "patch",
+        "params": [
+          "person",
+          [
+            {
+              "op": "replace",
+              "path": "/last_updated",
+              "value": "2023-06-16T08:34:25Z"
+            }
+          ]
         ]
-      ]
-    }
+      }
 
     Example response:
-    {
-      "id": 1,
-      "result": [
-        [
-          {
-            "op": "add",
-            "path": "/last_updated",
-            "value": "2023-06-16T08:34:25Z"
-          }
-        ],
-        [
-          {
-            "op": "add",
-            "path": "/last_updated",
-            "value": "2023-06-16T08:34:25Z"
-          }
+      {
+        "id": 1,
+        "result": [
+          [
+            {
+              "op": "add",
+              "path": "/last_updated",
+              "value": "2023-06-16T08:34:25Z"
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/last_updated",
+              "value": "2023-06-16T08:34:25Z"
+            }
+          ]
         ]
-      ]
-    }
+      }
   """
   def patch(pid, thing, patches, diff \\ false) do
     exec_method(pid, {"patch", [thing: thing, patches: patches, diff: diff]})
@@ -776,24 +776,24 @@ defmodule Surrealix.Socket do
     NOTE: Notice how the deleted record is being returned here
 
     Example request:
-    {
-      "id": 1,
-      "method": "delete",
-      "params": [
-        "person:8s0j0bbm3ngrd5c9bx53"
-      ]
-    }
+      {
+        "id": 1,
+        "method": "delete",
+        "params": [
+          "person:8s0j0bbm3ngrd5c9bx53"
+        ]
+      }
 
     Example response:
-    {
-      "id": 1,
-      "result": {
-        "active": true,
-        "id": "person:8s0j0bbm3ngrd5c9bx53",
-        "last_updated": "2023-06-16T08:34:25Z",
-        "name": "John Doe"
+      {
+        "id": 1,
+        "result": {
+          "active": true,
+          "id": "person:8s0j0bbm3ngrd5c9bx53",
+          "last_updated": "2023-06-16T08:34:25Z",
+          "name": "John Doe"
+        }
       }
-    }
   """
   def delete(pid, thing) do
     exec_method(pid, {"delete", [thing: thing]})
