@@ -63,24 +63,12 @@ export class SocketGenerator extends GenBase {
     let content = dedent`
     use WebSockex
 
-    @type socket_opts :: [
-            hostname: String.t(),
-            port: integer(),
-            namespace: String.t(),
-            database: String.t(),
-            username: String.t(),
-            password: String.t()
-          ]
+    alias Surrealix.Config
+    alias Surrealix.Telemetry
 
-    @type base_connection_opts :: socket_opts()
-    @base_connection_opts Application.compile_env(:surrealix, :connection,
-                            hostname: "localhost",
-                            port: 8000,
-                            namespace: "default",
-                            database: "default",
-                            username: "root",
-                            password: "root"
-                          )
+    require Logger
+
+    @type base_connection_opts :: Config.socket_opts()
 
     @spec start_link(socket_opts()) :: WebSockex.on_start()
     def start_link(opts \\\\ []) do
@@ -103,7 +91,7 @@ export class SocketGenerator extends GenBase {
     end
 
     def terminate(reason, state) do
-      IO.puts("Socket Terminating:\\n#{inspect(reason)}\\n\\n#{inspect(state)}\\n")
+      IO.puts("Socket terminating:\\n#{inspect(reason)}\\n\\n#{inspect(state)}\\n")
       exit(:normal)
     end
 
@@ -125,7 +113,11 @@ export class SocketGenerator extends GenBase {
       {:ok, state}
     end
 
-    defp exec_method(pid, {method, args}, opts \\\\ []) do
+    defp exec_method(pid, {method, args}, opts \\ []) do
+      start_time = System.monotonic_time()
+      meta = %{method: method, args: args}
+      Telemetry.start(:exec_method, meta)
+
       task =
         Task.async(fn ->
           receive do
@@ -143,7 +135,9 @@ export class SocketGenerator extends GenBase {
       WebSockex.cast(pid, {method, Keyword.merge([__receiver__: task], args)})
 
       task_timeout = Keyword.get(opts, :timeout, :infinity)
-      Task.await(task, task_timeout)
+      res = Task.await(task, task_timeout)
+      Telemetry.stop(:exec_method, start_time, meta)
+      res
     end
 
     defp task_opts_default, do: [timeout: :infinity]
