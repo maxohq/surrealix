@@ -2,33 +2,14 @@
 
 defmodule Surrealix.Socket do
   use WebSockex
+  alias Surrealix.Config
+  @type base_connection_opts :: Config.socket_opts()
 
-  @type socket_opts :: [
-          hostname: String.t(),
-          port: integer(),
-          namespace: String.t(),
-          database: String.t(),
-          username: String.t(),
-          password: String.t()
-        ]
+  require Logger
 
-  @type base_connection_opts :: socket_opts()
-  @base_connection_opts Application.compile_env(:surrealix, :connection,
-                          hostname: "localhost",
-                          port: 8000,
-                          namespace: "default",
-                          database: "default",
-                          username: "root",
-                          password: "root"
-                        )
-
-  @spec start_link(socket_opts()) :: WebSockex.on_start()
+  @spec start_link(Config.socket_opts()) :: WebSockex.on_start()
   def start_link(opts \\ []) do
-    opts =
-      Keyword.merge(
-        @base_connection_opts,
-        opts
-      )
+    opts = Keyword.merge(Config.base_conn_opts(), opts)
 
     hostname = Keyword.get(opts, :hostname)
     port = Keyword.get(opts, :port)
