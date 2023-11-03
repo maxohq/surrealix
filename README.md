@@ -14,9 +14,12 @@ Surrealix.signin(pid, %{user: "root", pass: "root"})
 Surrealix.use(pid, "test", "test")
 
 Surrealix.query(pid, "SELECT * FROM type::table($table);", %{table: "person"})
-Surrealix.live(pid, "users", true)
+Surrealix.live(pid, "person", true)
 
-## try running following query in the SurrealDB shell: `create users:1 set name = "John"`
+## for more complex LIVE queries
+Surrealix.query(pid, "LIVE SELECT * FROM person;")
+
+## try running following query in the SurrealDB shell: `create person:1 set name = "John"`
 ```
 
 ## Installation
