@@ -28,6 +28,7 @@ defmodule Surrealix.MixProject do
     [
       {:jason, "~> 1.4"},
       {:websockex, "~> 0.4"},
+      {:telemetry, "~> 1.2"},
       {:ex_doc, "~> 0.30", only: [:dev]}
     ]
   end

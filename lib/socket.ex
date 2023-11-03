@@ -3,6 +3,7 @@
 defmodule Surrealix.Socket do
   use WebSockex
   alias Surrealix.Config
+  alias Surrealix.Telemetry
   @type base_connection_opts :: Config.socket_opts()
 
   require Logger
@@ -47,6 +48,10 @@ defmodule Surrealix.Socket do
   end
 
   defp exec_method(pid, {method, args}, opts \\ []) do
+    start_time = System.monotonic_time()
+    meta = %{method: method, args: args}
+    Telemetry.start(:exec_method, meta)
+
     task =
       Task.async(fn ->
         receive do
@@ -64,7 +69,9 @@ defmodule Surrealix.Socket do
     WebSockex.cast(pid, {method, Keyword.merge([__receiver__: task], args)})
 
     task_timeout = Keyword.get(opts, :timeout, :infinity)
-    Task.await(task, task_timeout)
+    res = Task.await(task, task_timeout)
+    Telemetry.stop(:exec_method, start_time, meta)
+    res
   end
 
   defp task_opts_default, do: [timeout: :infinity]
