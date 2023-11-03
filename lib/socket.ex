@@ -2,11 +2,13 @@
 
 defmodule Surrealix.Socket do
   use WebSockex
+
   alias Surrealix.Config
   alias Surrealix.Telemetry
-  @type base_connection_opts :: Config.socket_opts()
 
   require Logger
+
+  @type base_connection_opts :: Config.socket_opts()
 
   @spec start_link(Config.socket_opts()) :: WebSockex.on_start()
   def start_link(opts \\ []) do
@@ -25,7 +27,7 @@ defmodule Surrealix.Socket do
   end
 
   def terminate(reason, state) do
-    IO.puts("Socket Terminating:\n#{inspect(reason)}\n\n#{inspect(state)}\n")
+    IO.puts("Socket terminating:\n#{inspect(reason)}\n\n#{inspect(state)}\n")
     exit(:normal)
   end
 

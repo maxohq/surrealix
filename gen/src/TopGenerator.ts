@@ -18,6 +18,7 @@ export class TopGenerator extends GenBase {
       this.genMethods();
     });
     this.push("end");
+    this.push("");
   }
 
   genStaticFunctions() {

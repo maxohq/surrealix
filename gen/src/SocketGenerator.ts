@@ -19,6 +19,7 @@ export class SocketGenerator extends GenBase {
       this.genMethods();
     });
     this.push("end");
+    this.push("");
   }
 
   genCastPayloadFunction() {
@@ -70,13 +71,9 @@ export class SocketGenerator extends GenBase {
 
     @type base_connection_opts :: Config.socket_opts()
 
-    @spec start_link(socket_opts()) :: WebSockex.on_start()
+    @spec start_link(Config.socket_opts()) :: WebSockex.on_start()
     def start_link(opts \\\\ []) do
-      opts =
-        Keyword.merge(
-          @base_connection_opts,
-          opts
-        )
+      opts = Keyword.merge(Config.base_conn_opts(), opts)
 
       hostname = Keyword.get(opts, :hostname)
       port = Keyword.get(opts, :port)
@@ -113,7 +110,7 @@ export class SocketGenerator extends GenBase {
       {:ok, state}
     end
 
-    defp exec_method(pid, {method, args}, opts \\ []) do
+    defp exec_method(pid, {method, args}, opts \\\\ []) do
       start_time = System.monotonic_time()
       meta = %{method: method, args: args}
       Telemetry.start(:exec_method, meta)
