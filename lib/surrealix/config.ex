@@ -1,4 +1,5 @@
 defmodule Surrealix.Config do
+  @moduledoc false
   @type socket_opts :: [
           hostname: String.t(),
           port: integer(),

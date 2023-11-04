@@ -1,6 +1,7 @@
 defmodule Surrealix.Dispatch do
+  @moduledoc false
   # based on ideas here: https://github.com/keathley/sync_dispatch
-  alias Surrealix.Dispatch.HandlerTable
+  alias Surrealix.HandlerTable
 
   @type handler_function :: (list(atom()), term(), term() -> any())
 
@@ -24,8 +25,12 @@ defmodule Surrealix.Dispatch do
   Different handlers should use unique handler ids.
   """
   @spec attach(term(), list(atom()), handler_function(), term()) ::
-          :ok | {:error, %Surrealix.Dispatch.AttachError{}}
+          :ok | {:error, %Surrealix.AttachError{}}
   def attach(id, event, fun, config \\ nil) do
     HandlerTable.insert(id, event, fun, config)
+  end
+
+  def remove(id) do
+    HandlerTable.remove(id)
   end
 end

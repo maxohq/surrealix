@@ -3,8 +3,8 @@ defmodule Surrealix.DispatchTest do
   alias Surrealix.Dispatch
 
   setup do
-    Surrealix.Dispatch.HandlerTable.start_link([])
-    Surrealix.Dispatch.HandlerTable.delete_all()
+    Surrealix.HandlerTable.start_link([])
+    Surrealix.HandlerTable.delete_all()
 
     :ok
   end
@@ -44,6 +44,6 @@ defmodule Surrealix.DispatchTest do
     assert {:error, error} =
              Dispatch.attach("handler", [:event, :prefix], fn _, _, _ -> nil end)
 
-    assert match?(%Dispatch.AttachError{}, error)
+    assert match?(%Surrealix.AttachError{}, error)
   end
 end

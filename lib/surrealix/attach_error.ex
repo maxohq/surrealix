@@ -1,4 +1,5 @@
-defmodule Surrealix.Dispatch.AttachError do
+defmodule Surrealix.AttachError do
+  @moduledoc false
   defexception [:message]
 
   @impl true

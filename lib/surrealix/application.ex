@@ -6,7 +6,7 @@ defmodule Surrealix.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      {Surrealix.Dispatch.HandlerTable, []}
+      {Surrealix.HandlerTable, []}
     ]
 
     opts = [strategy: :one_for_one, name: Surrealix.Supervisor]
