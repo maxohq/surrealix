@@ -40,10 +40,15 @@ defmodule Surrealix.Socket do
     IO.inspect(json, label: "JSON")
 
     if not Process.alive?(task.pid) do
-      IO.puts("[DEBUG] SENDING TO dead TASK... #{inspect(task.pid)}")
+      Surrealix.Dispatch.execute([:live_query], json)
+      IO.puts("[DEBUG] [DEAD] SENDING TO TASK... #{inspect(task.pid)}")
     end
 
-    Process.send(task.pid, {:ok, json, id}, [])
+    if Process.alive?(task.pid) do
+      IO.puts("[DEBUG] [LIVE] SENDING TO TASK... #{inspect(task.pid)}")
+      Process.send(task.pid, {:ok, json, id}, [])
+    end
+
     {:ok, state}
   end
 
