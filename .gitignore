@@ -24,3 +24,6 @@ surrealix-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# SurrealDB shell history
+history.txt
