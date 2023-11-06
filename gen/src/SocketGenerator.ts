@@ -24,7 +24,7 @@ export class SocketGenerator extends GenBase {
 
   genCastPayloadFunction() {
     this.push("");
-    this.push(`defp build_cast_payload(method, args) do`);
+    this.push(`defp build_cast_payload(method, args, id) do`);
     this.withIndent(() => {
       this.push("params =");
       this.withIndent(() => {
@@ -50,7 +50,7 @@ export class SocketGenerator extends GenBase {
     let code = dedent`
 
     %{
-      "id" => :rand.uniform(9999) |> to_string(),
+      "id" => id,
       "method" => method,
       "params" => params
     }
@@ -93,20 +93,26 @@ export class SocketGenerator extends GenBase {
     end
 
     def handle_cast(caller, _state) do
-      {method, args} = caller
+      {method, args, id} = caller
 
-      payload = build_cast_payload(method, args)
+      payload = build_cast_payload(method, args, id)
 
       frame = {:text, payload}
       {:reply, frame, args}
     end
 
-    def handle_frame({type, msg}, state) do
-      IO.inspect({"HANDLE_FRAME", type, msg})
-      # IO.inspect(state, label: "state")
+    def handle_frame({_type, msg}, state) do
       task = Keyword.get(state, :__receiver__)
+      json = Jason.decode!(msg)
+      id = Map.get(json, "id")
 
-      Process.send(task.pid, {:ok, Jason.decode!(msg)}, [])
+      if not Process.alive?(task.pid) do
+        Surrealix.Dispatch.execute([:live_query], json)
+      end
+
+      if Process.alive?(task.pid) do
+        Process.send(task.pid, {:ok, json, id}, [])
+      end
       {:ok, state}
     end
 
@@ -114,11 +120,12 @@ export class SocketGenerator extends GenBase {
       start_time = System.monotonic_time()
       meta = %{method: method, args: args}
       Telemetry.start(:exec_method, meta)
+      id = uuid(40)
 
       task =
         Task.async(fn ->
           receive do
-            {:ok, msg} ->
+            {:ok, msg, ^id} ->
               if is_map(msg) and Map.has_key?(msg, "error"), do: {:error, msg}, else: {:ok, msg}
 
             {:error, reason} ->
@@ -129,7 +136,8 @@ export class SocketGenerator extends GenBase {
           end
         end)
 
-      WebSockex.cast(pid, {method, Keyword.merge([__receiver__: task], args)})
+      args = Keyword.merge([__receiver__: task], args)
+      WebSockex.cast(pid, {method, args, id})
 
       task_timeout = Keyword.get(opts, :timeout, :infinity)
       res = Task.await(task, task_timeout)
@@ -138,6 +146,11 @@ export class SocketGenerator extends GenBase {
     end
 
     defp task_opts_default, do: [timeout: :infinity]
+
+    def uuid(length) do
+      ## TODO: check performance characteristics
+      :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
+    end
     `;
 
     this.plainPush(lpad(content, "  "));

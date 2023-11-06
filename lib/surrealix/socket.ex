@@ -31,30 +31,7 @@ defmodule Surrealix.Socket do
     exit(:normal)
   end
 
-  def handle_frame({type, msg}, state) do
-    IO.inspect({type, msg}, label: "HANDLE_FRAME")
-    # IO.inspect(state, label: "state")
-    task = Keyword.get(state, :__receiver__)
-    json = Jason.decode!(msg)
-    id = Map.get(json, "id")
-    IO.inspect(json, label: "JSON")
-
-    if not Process.alive?(task.pid) do
-      Surrealix.Dispatch.execute([:live_query], json)
-      IO.puts("[DEBUG] [DEAD] SENDING TO TASK... #{inspect(task.pid)}")
-    end
-
-    if Process.alive?(task.pid) do
-      IO.puts("[DEBUG] [LIVE] SENDING TO TASK... #{inspect(task.pid)}")
-      Process.send(task.pid, {:ok, json, id}, [])
-    end
-
-    {:ok, state}
-  end
-
-  def handle_cast(caller, state) do
-    IO.inspect(caller, label: "CALLER")
-    IO.inspect(state, label: "STATE")
+  def handle_cast(caller, _state) do
     {method, args, id} = caller
 
     payload = build_cast_payload(method, args, id)
@@ -63,19 +40,32 @@ defmodule Surrealix.Socket do
     {:reply, frame, args}
   end
 
+  def handle_frame({_type, msg}, state) do
+    task = Keyword.get(state, :__receiver__)
+    json = Jason.decode!(msg)
+    id = Map.get(json, "id")
+
+    if not Process.alive?(task.pid) do
+      Surrealix.Dispatch.execute([:live_query], json)
+    end
+
+    if Process.alive?(task.pid) do
+      Process.send(task.pid, {:ok, json, id}, [])
+    end
+
+    {:ok, state}
+  end
+
   defp exec_method(pid, {method, args}, opts \\ []) do
     start_time = System.monotonic_time()
     meta = %{method: method, args: args}
     Telemetry.start(:exec_method, meta)
-    # ID we need to match on to get the correct response from server
-    ## it could happen, that some async response from a live query comes back and it would be
     id = uuid(40)
 
     task =
       Task.async(fn ->
         receive do
           {:ok, msg, ^id} ->
-            IO.puts("[DEBUG] handle receive in exec_method")
             if is_map(msg) and Map.has_key?(msg, "error"), do: {:error, msg}, else: {:ok, msg}
 
           {:error, reason} ->
@@ -85,8 +75,6 @@ defmodule Surrealix.Socket do
             {:error, "Unknown Error"}
         end
       end)
-
-    IO.puts("[DEBUG] before WebSockex.cast")
 
     args = Keyword.merge([__receiver__: task], args)
     WebSockex.cast(pid, {method, args, id})
@@ -98,6 +86,11 @@ defmodule Surrealix.Socket do
   end
 
   defp task_opts_default, do: [timeout: :infinity]
+
+  def uuid(length) do
+    ## TODO: check performance characteristics
+    :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
+  end
 
   defp build_cast_payload(method, args, id) do
     params =
@@ -129,11 +122,6 @@ defmodule Surrealix.Socket do
       "params" => params
     }
     |> Jason.encode!()
-  end
-
-  def uuid(length) do
-    ## TODO: check performance characteristics
-    :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
   end
 
   ### API METHODS : START ###
