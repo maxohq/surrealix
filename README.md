@@ -23,7 +23,6 @@ Surrealix.query(pid, "LIVE SELECT * FROM person;")
 
 ## start dispatch registry
 
-Surrealix.HandlerTable.start_link([])
 Surrealix.Dispatch.attach("first", [:live_query], fn (event, data, config)-> IO.inspect({:res, event, data}) end)
 Surrealix.Dispatch.remove("first")
 ## try running following query in the SurrealDB shell: `create person:1 set name = "John"`
