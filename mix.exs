@@ -33,6 +33,7 @@ defmodule Surrealix.MixProject do
       {:websockex, "~> 0.4"},
       {:telemetry, "~> 1.2"},
       {:maxo_test_iex, "~> 0.1", only: [:test]},
+      {:mneme, ">= 0.0.0", only: [:dev, :test]},
       {:ex_doc, "~> 0.30", only: [:dev]}
     ]
   end
