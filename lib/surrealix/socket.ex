@@ -17,7 +17,7 @@ defmodule Surrealix.Socket do
     hostname = Keyword.get(opts, :hostname)
     port = Keyword.get(opts, :port)
 
-    WebSockex.start_link("ws://#{hostname}:#{port}/rpc", __MODULE__, opts)
+    WebSockex.start_link("ws://#{hostname}:#{port}/rpc", __MODULE__, %{}, opts)
   end
 
   @spec stop(pid()) :: :ok
