@@ -5,6 +5,7 @@ defmodule Surrealix.Socket do
 
   alias Surrealix.Config
   alias Surrealix.Telemetry
+  alias Surrealix.SocketState
 
   require Logger
 
@@ -17,7 +18,7 @@ defmodule Surrealix.Socket do
     hostname = Keyword.get(opts, :hostname)
     port = Keyword.get(opts, :port)
 
-    WebSockex.start_link("ws://#{hostname}:#{port}/rpc", __MODULE__, %{}, opts)
+    WebSockex.start_link("ws://#{hostname}:#{port}/rpc", __MODULE__, SocketState.new(), opts)
   end
 
   @spec stop(pid()) :: :ok
@@ -31,7 +32,8 @@ defmodule Surrealix.Socket do
     exit(:normal)
   end
 
-  def handle_cast(caller, _state) do
+  def handle_cast(caller, state) do
+    Logger.debug("[surrealix] [handle_cast] #{inspect(state)}")
     {method, args, id} = caller
 
     payload = build_cast_payload(method, args, id)

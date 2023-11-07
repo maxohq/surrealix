@@ -78,7 +78,8 @@ export class SocketGenerator extends GenBase {
       hostname = Keyword.get(opts, :hostname)
       port = Keyword.get(opts, :port)
 
-      WebSockex.start_link("ws://#{hostname}:#{port}/rpc", __MODULE__, opts)
+      # url / name / state / socket opts
+      WebSockex.start_link("ws://#{hostname}:#{port}/rpc", __MODULE__, %{}, opts)
     end
 
     @spec stop(pid()) :: :ok
