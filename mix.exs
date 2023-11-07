@@ -12,7 +12,9 @@ defmodule Surrealix.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       package: package(),
-      description: description()
+      description: description(),
+      test_paths: ["test", "lib"],
+      test_pattern: "*_test.exs"
     ]
   end
 
@@ -30,6 +32,7 @@ defmodule Surrealix.MixProject do
       {:jason, "~> 1.4"},
       {:websockex, "~> 0.4"},
       {:telemetry, "~> 1.2"},
+      {:maxo_test_iex, "~> 0.1", only: [:test]},
       {:ex_doc, "~> 0.30", only: [:dev]}
     ]
   end
