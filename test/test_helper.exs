@@ -1,6 +1,8 @@
 ExUnit.start()
 
 defmodule TestSupport do
+  use ExUnit.Case
+
   def extract_res({:ok, res}) do
     Map.get(res, "result")
   end
@@ -9,25 +11,26 @@ defmodule TestSupport do
     extract_res({:ok, res}) |> Enum.at(index) |> Map.get("result")
   end
 
+  def setup_surrealix(_context) do
+    db = db_name()
+    # NOT start_link(), so we can cleanup after test exits!
+    {:ok, pid} = Surrealix.start()
+    Surrealix.signin(pid, %{user: "root", pass: "root"})
+    Surrealix.use(pid, "test", db)
+
+    on_exit(:drop_db, fn ->
+      _res = Surrealix.query(pid, "remove database #{db};")
+      Surrealix.stop(pid)
+    end)
+
+    %{pid: pid}
+  end
+
   def db_name() do
     rand =
       :crypto.strong_rand_bytes(6)
       |> Base.encode64()
 
     "test_#{Regex.replace(~r/\W/, rand, "")}"
-  end
-
-  def with_cleanup(fun) do
-    db = db_name()
-    # IO.puts("*********** DB: #{db}")
-    {:ok, pid} = Surrealix.start_link()
-    Surrealix.signin(pid, %{user: "root", pass: "root"})
-    Surrealix.use(pid, "test", db)
-
-    fun.(pid)
-
-    _res = Surrealix.query(pid, "remove database #{db};")
-    # IO.inspect(res, label: :res)
-    Surrealix.stop(pid)
   end
 end

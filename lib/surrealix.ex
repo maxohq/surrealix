@@ -3,9 +3,8 @@
 defmodule Surrealix do
   alias Surrealix.Socket, as: Socket
 
-  defdelegate start_link(), to: Socket
-  defdelegate start_link(opts), to: Socket
-
+  defdelegate start(opts \\ []), to: Socket
+  defdelegate start_link(opts \\ []), to: Socket
   defdelegate stop(pid), to: Socket
 
   @doc """
