@@ -1,6 +1,10 @@
 defmodule Surrealix.Dispatch do
-  @moduledoc false
-  # based on ideas here: https://github.com/keathley/sync_dispatch
+  @moduledoc """
+  Handles callback registration (for only when using live queries).
+  Based on ideas here: https://github.com/keathley/sync_dispatch
+    - which itself is based on :telemetry (https://hex.pm/packages/telemetry) implementation.
+  """
+
   alias Surrealix.HandlerTable
 
   @type handler_function :: (list(atom()), term(), term() -> any())

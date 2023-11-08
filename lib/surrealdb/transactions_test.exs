@@ -6,7 +6,7 @@ defmodule TransactionsTest do
   describe "Begin / Commit" do
     setup [:setup_surrealix]
 
-    test "insert / update / merge / query ", %{pid: pid} do
+    test "begin/ commit ", %{pid: pid} do
       sql = """
       -- Start a new database transaction. Transactions are a way to ensure multiple operations
       -- either all succeed or all fail, maintaining data integrity.
@@ -48,6 +48,42 @@ defmodule TransactionsTest do
           ok: [%{"balance" => 91031.31, "id" => "account:two"}],
           ok: [%{"balance" => 135_905.16, "id" => "account:one"}],
           ok: [%{"balance" => 90731.31, "id" => "account:two"}]
+        ] <- parsed
+      )
+    end
+
+    test "begin / cancel", %{pid: pid} do
+      sql = """
+      BEGIN TRANSACTION;
+      -- Setup accounts
+      CREATE account:one SET balance = 135605.16;
+      CREATE account:two SET balance = 91031.31;
+      -- Move money
+      UPDATE account:one SET balance += 300.00;
+      UPDATE account:two SET balance -= 300.00;
+      -- Rollback all changes
+      CANCEL TRANSACTION;
+
+      select * from account;
+      """
+
+      {:ok, res} = Surrealix.query(pid, sql)
+
+      result = Map.get(res, "result")
+
+      parsed =
+        result
+        |> Enum.map(fn x ->
+          {:ok, Map.get(x, "result")}
+        end)
+
+      auto_assert(
+        [
+          ok: "The query was not executed due to a cancelled transaction",
+          ok: "The query was not executed due to a cancelled transaction",
+          ok: "The query was not executed due to a cancelled transaction",
+          ok: "The query was not executed due to a cancelled transaction",
+          ok: []
         ] <- parsed
       )
     end

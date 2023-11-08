@@ -18,6 +18,7 @@ Surrealix.live(pid, "person", true)
 
 ## for more complex LIVE queries
 Surrealix.query(pid, "LIVE SELECT * FROM person;")
+Surrealix.query(pid, "LIVE SELECT DIFF FROM person;")
 
 
 
