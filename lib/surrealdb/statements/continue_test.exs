@@ -7,7 +7,7 @@ defmodule BreakTest do
     setup [:setup_surrealix]
 
     test "for - update / continue", %{pid: pid} do
-      sql = """
+      sql = ~s|
       create person:1 set age = 17;
       create person:2 set age = 18;
       create person:3 set age = 19;
@@ -22,7 +22,7 @@ defmodule BreakTest do
       };
 
       select * from person where can_vote = true;
-      """
+      |
 
       parsed = Surrealix.query(pid, sql) |> extract_res_list()
 

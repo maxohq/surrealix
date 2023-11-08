@@ -7,7 +7,7 @@ defmodule ForTest do
     setup [:setup_surrealix]
 
     test "for - create", %{pid: pid} do
-      sql = """
+      sql = ~s|
       FOR $name IN ['John', 'Mike'] {
         CREATE type::thing('person', $name) CONTENT {
             name: $name
@@ -15,7 +15,7 @@ defmodule ForTest do
       };
 
       select * from person;
-      """
+      |
 
       parsed = Surrealix.query(pid, sql) |> extract_res_list()
 
@@ -31,7 +31,7 @@ defmodule ForTest do
     end
 
     test "for - update", %{pid: pid} do
-      sql = """
+      sql = ~s|
       create person:1 set age = 19;
       create person:2 set age = 17;
       create person:3 set age = 18;
@@ -39,7 +39,7 @@ defmodule ForTest do
         UPDATE $person SET can_vote = true;
       };
       select * from person where can_vote = true;
-      """
+      |
 
       parsed = Surrealix.query(pid, sql) |> extract_res_list()
 

@@ -7,7 +7,7 @@ defmodule TransactionsTest do
     setup [:setup_surrealix]
 
     test "begin/ commit ", %{pid: pid} do
-      sql = """
+      sql = ~s|
       -- Start a new database transaction. Transactions are a way to ensure multiple operations
       -- either all succeed or all fail, maintaining data integrity.
       BEGIN TRANSACTION;
@@ -30,7 +30,7 @@ defmodule TransactionsTest do
       -- during any of the previous steps within the transaction, all changes would be rolled back and
       -- the database would remain in its initial state.
       COMMIT TRANSACTION;
-      """
+      |
 
       parsed = Surrealix.query(pid, sql) |> extract_res_list()
 
@@ -45,7 +45,7 @@ defmodule TransactionsTest do
     end
 
     test "begin / cancel", %{pid: pid} do
-      sql = """
+      sql = ~s|
       BEGIN TRANSACTION;
       -- Setup accounts
       CREATE account:one SET balance = 135605.16;
@@ -57,7 +57,7 @@ defmodule TransactionsTest do
       CANCEL TRANSACTION;
 
       select * from account;
-      """
+      |
 
       parsed = Surrealix.query(pid, sql) |> extract_res_list()
 

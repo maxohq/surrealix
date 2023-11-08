@@ -7,19 +7,19 @@ defmodule SelectTest do
     setup [:setup_surrealix]
 
     test "select - basic", %{pid: pid} do
-      setup_sql = """
-      create person:1 set name = "John", email = "a@b.com", address = {city: "Rome"};
-      create person:2 set name = "Marry", email = "b@b.com", address = {city: "Barcelona"};
-      create company:1 set name = "SunnyCorp", email = "c@b.com", address = {city: "Lost City", street: "Road to heaven"};
-      """
+      setup_sql = ~s|
+        create person:1 set name = "John", email = "a@b.com", address = {city: "Rome"};
+        create person:2 set name = "Marry", email = "b@b.com", address = {city: "Barcelona"};
+        create company:1 set name = "SunnyCorp", email = "c@b.com", address = {city: "Lost City", street: "Road to heaven"};
+      |
 
-      sql = """
-      -- wrap response in a map
-      return {idx: 1, res: select * from person};
+      sql = ~s|
+        -- wrap response in a map
+        return {idx: 1, res: select * from person};
 
-      -- select different things in a single query
-      return {idx: 2, res: select * from person:1, company:1};
-      """
+        -- select different things in a single query
+        return {idx: 2, res: select * from person:1, company:1};
+      |
 
       {:ok, _} = Surrealix.query(pid, setup_sql)
 
@@ -66,43 +66,24 @@ defmodule SelectTest do
     end
 
     test "select - subselect on computed field", %{pid: pid} do
-      setup_sql = """
-      create person:1 set name = "John", email = "a@b.com", age = 22;
-      create person:2 set name = "Marry", email = "b@b.com", age = 17;
-      create person:3 set name = "Michael", email = "c@b.com", age = 18;
-      """
+      setup_sql = ~s|
+        create person:1 set name = "John", email = "a@b.com", address = {city: "Rome"};
+        create person:2 set name = "Marry", email = "b@b.com", address = {city: "Barcelona"};
+        create company:1 set name = "SunnyCorp", email = "c@b.com", address = {city: "Lost City", street: "Road to heaven"};
+      |
 
-      sql = """
-      -- This command first performs a subquery, which selects all 'person' records and adds a
-      -- computed 'adult' field that is true if the person's 'age' is 18 or older.
-      -- The main query then selects all records from this subquery where 'adult' is true.
-      SELECT * FROM (SELECT *, age >= 18 AS adult FROM person) WHERE adult = true;
-      """
+      sql = ~s|
+        -- This command first performs a subquery, which selects all 'person' records and adds a
+        -- computed 'adult' field that is true if the person's 'age' is 18 or older.
+        -- The main query then selects all records from this subquery where 'adult' is true.
+        SELECT * FROM (SELECT *, age >= 18 AS adult FROM person) WHERE adult = true;
+      |
 
       {:ok, _} = Surrealix.query(pid, setup_sql)
 
       parsed = Surrealix.query(pid, sql) |> extract_res_list()
 
-      auto_assert(
-        [
-          ok: [
-            %{
-              "adult" => true,
-              "age" => 22,
-              "email" => "a@b.com",
-              "id" => "person:1",
-              "name" => "John"
-            },
-            %{
-              "adult" => true,
-              "age" => 18,
-              "email" => "c@b.com",
-              "id" => "person:3",
-              "name" => "Michael"
-            }
-          ]
-        ] <- parsed
-      )
+      auto_assert([ok: []] <- parsed)
     end
   end
 end

@@ -7,7 +7,7 @@ defmodule BreakTest do
     setup [:setup_surrealix]
 
     test "for - create / BREAK", %{pid: pid} do
-      sql = """
+      sql = ~s|
       -- Create a person for everyone in the array
       FOR $num IN [1, 2, 3, 4, 5, 6, 7, 8, 9] {
         CREATE type::thing('person', $num) CONTENT {
@@ -19,7 +19,7 @@ defmodule BreakTest do
       };
 
       select * from person;
-      """
+      |
 
       parsed = Surrealix.query(pid, sql) |> extract_res_list()
 
