@@ -3,6 +3,10 @@ defmodule SelectTest do
   use MnemeDefaults
   import TestSupport
 
+  @moduledoc """
+  - https://surrealdb.com/docs/surrealql/statements/select
+  """
+
   describe "Select" do
     setup [:setup_surrealix]
 
@@ -67,9 +71,9 @@ defmodule SelectTest do
 
     test "select - subselect on computed field", %{pid: pid} do
       setup_sql = ~s|
-        create person:1 set name = "John", email = "a@b.com", address = {city: "Rome"};
-        create person:2 set name = "Marry", email = "b@b.com", address = {city: "Barcelona"};
-        create company:1 set name = "SunnyCorp", email = "c@b.com", address = {city: "Lost City", street: "Road to heaven"};
+        create person:1 set name = "John", email = "a@b.com", age = 17;
+        create person:2 set name = "Marry", email = "b@b.com", age = 18;
+        create person:3 set name = "Chris", email = "c@b.com", age = 20;
       |
 
       sql = ~s|
@@ -83,7 +87,114 @@ defmodule SelectTest do
 
       parsed = Surrealix.query(pid, sql) |> extract_res_list()
 
-      auto_assert([ok: []] <- parsed)
+      auto_assert(
+        [
+          ok: [
+            %{
+              "adult" => true,
+              "age" => 18,
+              "email" => "b@b.com",
+              "id" => "person:2",
+              "name" => "Marry"
+            },
+            %{
+              "adult" => true,
+              "age" => 20,
+              "email" => "c@b.com",
+              "id" => "person:3",
+              "name" => "Chris"
+            }
+          ]
+        ] <- parsed
+      )
+    end
+
+    test "select - from multiple tables", %{pid: pid} do
+      setup_sql = ~s|
+        create person:1 set name = "John", email = "a@b.com", age = 17;
+        create person:2 set name = "Marry", email = "b@b.com", age = 18;
+        create admin:1 set name = "Chris", email = "c@b.com", age = 20;
+      |
+
+      sql = ~s|
+      -- This command selects all records from both 'user' and 'admin' tables.
+      SELECT * FROM person, admin;
+      |
+
+      {:ok, _} = Surrealix.query(pid, setup_sql)
+
+      parsed = Surrealix.query(pid, sql) |> extract_res_list()
+
+      auto_assert(
+        [
+          ok: [
+            %{"age" => 17, "email" => "a@b.com", "id" => "person:1", "name" => "John"},
+            %{"age" => 18, "email" => "b@b.com", "id" => "person:2", "name" => "Marry"},
+            %{"age" => 20, "email" => "c@b.com", "id" => "admin:1", "name" => "Chris"}
+          ]
+        ] <- parsed
+      )
+    end
+
+    test "select - filtering on graph edges", %{pid: pid} do
+      setup_sql = ~s|
+        create org:1 set name = "Org1";
+        create org:2 set name = "Org2";
+        create org:3 set name = "Org3";
+        create org:4 set name = "Org4";
+        create profile:1 set name = "Prof1";
+        create profile:2 set name = "Prof2";
+        create profile:3 set name = "Prof3";
+
+
+        RELATE profile:1->experience->org:1
+	        SET time.started = time::now()
+        ;
+        RELATE profile:1->experience->org:2
+	        SET time.started = time::now()
+        ;
+        RELATE profile:1->experience->org:3
+	        SET time.started = time::now()
+        ;
+        RELATE profile:1->experience->org:4
+	        SET time.started = time::now()
+        ;
+
+        RELATE profile:2->experience->org:1
+	        SET time.started = time::now()
+        ;
+        RELATE profile:2->experience->org:2
+	        SET time.started = time::now()
+        ;
+
+        RELATE profile:3->experience->org:1
+	        SET time.started = time::now()
+        ;
+      |
+
+      sql = ~s|
+      -- Conditional filtering based on graph edges
+      SELECT * FROM profile WHERE count(->experience->org) > 3;
+      SELECT * FROM profile WHERE count(->experience->org) > 1;
+
+      -- include the count into result
+      SELECT *, count(->experience->org) as exp FROM profile WHERE count(->experience->org) = 1;
+      |
+
+      {:ok, _} = Surrealix.query(pid, setup_sql)
+
+      parsed = Surrealix.query(pid, sql) |> extract_res_list()
+
+      auto_assert(
+        [
+          ok: [%{"id" => "profile:1", "name" => "Prof1"}],
+          ok: [
+            %{"id" => "profile:1", "name" => "Prof1"},
+            %{"id" => "profile:2", "name" => "Prof2"}
+          ],
+          ok: [%{"exp" => 1, "id" => "profile:3", "name" => "Prof3"}]
+        ] <- parsed
+      )
     end
   end
 end
