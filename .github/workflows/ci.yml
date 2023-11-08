@@ -47,8 +47,8 @@ jobs:
       - name: Run format check
         run: mix format --check-formatted
       - name: Start SurrealDB docker image
-        run: dev/ci-docker-surreal-restart.sh
+        run: bin/ci-docker-surreal-restart.sh
       - name: Mix test
         run: mix test
       - name: Stop SurrealDB docker image
-        run: dev/ci-docker-surreal-stop.sh
+        run: bin/ci-docker-surreal-stop.sh
