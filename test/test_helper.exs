@@ -32,6 +32,7 @@ defmodule TestSupport do
   def setup_surrealix(_context) do
     db = db_name()
     # NOT start_link(), so we can cleanup after test exits!
+    # {:ok, pid} = Surrealix.start(debug: [:trace]) ## this is for debugging!
     {:ok, pid} = Surrealix.start()
     Surrealix.signin(pid, %{user: "root", pass: "root"})
     Surrealix.use(pid, "test", db)
