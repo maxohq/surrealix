@@ -93,8 +93,8 @@ export class SocketGenerator extends GenBase {
       exit(:normal)
     end
 
-    def handle_cast(caller, _state) do
-      {method, args, id} = caller
+    def handle_cast(request_args, state) do
+      {method, args, id, task} = request_args
 
       payload = build_cast_payload(method, args, id)
 
@@ -117,28 +117,30 @@ export class SocketGenerator extends GenBase {
       {:ok, state}
     end
 
-    defp exec_method(pid, {method, args}, opts \\\\ []) do
+    defp exec_method(pid, {method, args, task}, opts \\\\ []) do
       start_time = System.monotonic_time()
       meta = %{method: method, args: args}
       Telemetry.start(:exec_method, meta)
       id = uuid(40)
 
       task =
-        Task.async(fn ->
-          receive do
-            {:ok, msg, ^id} ->
-              if is_map(msg) and Map.has_key?(msg, "error"), do: {:error, msg}, else: {:ok, msg}
+        if task != nil,
+          do: task,
+          else:
+            Task.async(fn ->
+              receive do
+                {:ok, msg, ^id} ->
+                  if is_map(msg) and Map.has_key?(msg, "error"), do: {:error, msg}, else: {:ok, msg}
 
-            {:error, reason} ->
-              {:error, reason}
+                {:error, reason} ->
+                  {:error, reason}
 
-            _ ->
-              {:error, "Unknown Error"}
-          end
-        end)
+                _ ->
+                  {:error, "Unknown Error"}
+              end
+            end)
 
-      args = Keyword.merge([__receiver__: task], args)
-      WebSockex.cast(pid, {method, args, id})
+      WebSockex.cast(pid, {method, args, id, task})
 
       task_timeout = Keyword.get(opts, :timeout, :infinity)
       res = Task.await(task, task_timeout)
@@ -180,7 +182,7 @@ export class SocketGenerator extends GenBase {
 
   genPayloadMethod(method: IMethod) {
     this.push(`def ${method.name}(pid, payload) do`);
-    this.push(`  exec_method(pid, {"${method.name}", [payload: payload]})`);
+    this.push(`  exec_method(pid, {"${method.name}", [payload: payload], nil})`);
     this.push("end");
     this.push("");
   }
@@ -189,7 +191,7 @@ export class SocketGenerator extends GenBase {
       `def ${method.name}(pid, payload, task, opts \\\\ task_opts_default()) do`
     );
     this.push(
-      `  exec_method(pid, {"${method.name}", [payload: payload, __receiver__: task]}, opts)`
+      `  exec_method(pid, {"${method.name}", [payload: payload], task}, opts)`
     );
     this.push("end");
     this.push("");
@@ -213,7 +215,7 @@ export class SocketGenerator extends GenBase {
     let params = method.parameter
       .map((param) => `${param.name}: ${param.name}`)
       .join(", ");
-    this.push(`  exec_method(pid, {"${method.name}", [${params}]})`);
+    this.push(`  exec_method(pid, {"${method.name}", [${params}], nil})`);
     this.push("end");
     this.push("");
   }
@@ -232,9 +234,8 @@ export class SocketGenerator extends GenBase {
     }
     let params = method.parameter
       .map((param) => `${param.name}: ${param.name}`)
-      .concat([`__receiver__: task`])
       .join(", ");
-    this.push(`  exec_method(pid, {"${method.name}", [${params}]}, opts)`);
+    this.push(`  exec_method(pid, {"${method.name}", [${params}], task}, opts)`);
     this.push("end");
     this.push("");
   }
