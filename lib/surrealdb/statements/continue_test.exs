@@ -1,4 +1,4 @@
-defmodule BreakTest do
+defmodule ContinueTest do
   use ExUnit.Case
   use MnemeDefaults
   import TestSupport
