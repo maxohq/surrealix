@@ -3,7 +3,7 @@ defmodule TransactionsTest do
   use MnemeDefaults
   import TestSupport
 
-  describe "Begin / Commit" do
+  describe "Transactions" do
     setup [:setup_surrealix]
 
     test "begin/ commit ", %{pid: pid} do
@@ -32,15 +32,7 @@ defmodule TransactionsTest do
       COMMIT TRANSACTION;
       """
 
-      {:ok, res} = Surrealix.query(pid, sql)
-
-      result = Map.get(res, "result")
-
-      parsed =
-        result
-        |> Enum.map(fn x ->
-          {:ok, Map.get(x, "result")}
-        end)
+      parsed = Surrealix.query(pid, sql) |> extract_res_list()
 
       auto_assert(
         [
@@ -67,15 +59,7 @@ defmodule TransactionsTest do
       select * from account;
       """
 
-      {:ok, res} = Surrealix.query(pid, sql)
-
-      result = Map.get(res, "result")
-
-      parsed =
-        result
-        |> Enum.map(fn x ->
-          {:ok, Map.get(x, "result")}
-        end)
+      parsed = Surrealix.query(pid, sql) |> extract_res_list()
 
       auto_assert(
         [

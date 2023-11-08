@@ -20,6 +20,15 @@ defmodule TestSupport do
     extract_res({:ok, res}) |> Enum.at(index) |> Map.get("result")
   end
 
+  def extract_res_list({:ok, res}) do
+    result = Map.get(res, "result")
+
+    result
+    |> Enum.map(fn x ->
+      {:ok, Map.get(x, "result")}
+    end)
+  end
+
   def setup_surrealix(_context) do
     db = db_name()
     # NOT start_link(), so we can cleanup after test exits!
