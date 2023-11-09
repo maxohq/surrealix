@@ -77,11 +77,10 @@ defmodule ArrayTest do
     test "array::flatten", %{pid: pid} do
       sql = ~s|
                 -- The array::flatten flattens an array of arrays, returning a new array with all sub-array elements concatenated into it.
-                RETURN array::flatten([ [1,2], [3, 4], 'SurrealDB', [5, 6, [7, 8]] ]);
+                RETURN array::flatten([ [1,2], [3, 4], 'SurrealDB', [5, 6, [4545, 7777]] ]);
               |
       parsed = Surrealix.query(pid, sql) |> extract_res_list()
-      ## [7,8] looks funny as char list
-      auto_assert([ok: [1, 2, 3, 4, "SurrealDB", 5, 6, ~c""]] <- parsed)
+      auto_assert([ok: [1, 2, 3, 4, "SurrealDB", 5, 6, [4545, 7777]]] <- parsed)
     end
 
     test "array:find_index", %{pid: pid} do
