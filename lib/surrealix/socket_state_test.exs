@@ -1,5 +1,5 @@
 defmodule Surrealix.SocketStateTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   alias Surrealix.SocketState
 

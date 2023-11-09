@@ -1,4 +1,5 @@
 defmodule Surrealix.DispatchTest do
+  # cant be async, uses a global gen ETS table!
   use ExUnit.Case
   alias Surrealix.Dispatch
 

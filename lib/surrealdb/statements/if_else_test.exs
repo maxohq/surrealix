@@ -1,5 +1,5 @@
 defmodule IfElseTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   use MnemeDefaults
   import TestSupport
 
