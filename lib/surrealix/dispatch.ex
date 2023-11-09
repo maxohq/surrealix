@@ -34,7 +34,11 @@ defmodule Surrealix.Dispatch do
     HandlerTable.insert(id, event, fun, config)
   end
 
-  def remove(id) do
-    HandlerTable.remove(id)
+  def remove_by_id(id) do
+    HandlerTable.remove_by_id(id)
+  end
+
+  def remove_by_event(id) do
+    HandlerTable.remove_by_event(id)
   end
 end

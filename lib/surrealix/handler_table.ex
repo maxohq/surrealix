@@ -48,8 +48,12 @@ defmodule Surrealix.HandlerTable do
     end
   end
 
-  def remove(id) do
+  def remove_by_id(id) do
     :ets.match_delete(@table, {id, :_, :_, :_})
+  end
+
+  def remove_by_event(event) do
+    :ets.match_delete(@table, {:_, event, :_, :_})
   end
 
   # Debug / dev functions #############

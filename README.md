@@ -19,15 +19,37 @@ Surrealix.live(pid, "person", true)
 ## for more complex LIVE queries
 Surrealix.query(pid, "LIVE SELECT * FROM person;")
 Surrealix.query(pid, "LIVE SELECT DIFF FROM person;")
-
-
-
-## start dispatch registry
-
-Surrealix.Dispatch.attach("first", [:live_query], fn (event, data, config)-> IO.inspect({:res, event, data}) end)
-Surrealix.Dispatch.remove("first")
-## try running following query in the SurrealDB shell: `create person:1 set name = "John"`
 ```
+
+```elixir
+## Example with live query callbacks
+
+{:ok, pid} = Surrealix.start_link(namespace: "test", database: "test")
+Surrealix.signin(pid, %{user: "root", pass: "root"})
+Surrealix.use(pid, "test", "test")
+{:ok,
+ %{
+   "result" => [
+     %{
+       "result" => lq_id,
+     }
+   ]
+ }} = Surrealix.query(pid, "LIVE SELECT * FROM person;")
+
+event = [:live_query, lq_id]
+Surrealix.Dispatch.attach("logger", event, fn (event, data, config) ->
+    IO.puts ">>>>>> CALLBACK WORKS!"
+    IO.inspect(event, label: :EVENT)
+    IO.inspect(data, label: :DATA)
+end)
+
+## now change data in the person table
+Surrealix.query(pid, "update person:2 set name = 1")
+
+## to remove the callback
+# Surrealix.Dispatch.remove_by_event(event)
+```
+
 
 ## Installation
 

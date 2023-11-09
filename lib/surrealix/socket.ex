@@ -46,29 +46,31 @@ defmodule Surrealix.Socket do
     exit(:normal)
   end
 
-  def handle_cast(caller, state) do
+  def handle_cast({method, args, id, task}, state) do
     Logger.debug("[surrealix] [handle_cast] #{inspect(state)}")
-    {method, args, id} = caller
 
     payload = build_cast_payload(method, args, id)
-
+    state = SocketState.add_task(state, id, task)
     frame = {:text, payload}
-    {:reply, frame, args}
+    {:reply, frame, state}
   end
 
   def handle_frame({_type, msg}, state) do
-    task = Keyword.get(state, :__receiver__)
     json = Jason.decode!(msg)
     id = Map.get(json, "id")
+    task = SocketState.get_task(state, id)
 
-    if not Process.alive?(task.pid) do
-      Surrealix.Dispatch.execute([:live_query], json)
+    if is_nil(task) do
+      # there is no registered task for this ID, it must be a live query update!
+      lq_id = get_in(json, ["result", "id"])
+      Surrealix.Dispatch.execute([:live_query, lq_id], json)
+    else
+      if Process.alive?(task.pid) do
+        Process.send(task.pid, {:ok, json, id}, [])
+      end
     end
 
-    if Process.alive?(task.pid) do
-      Process.send(task.pid, {:ok, json, id}, [])
-    end
-
+    state = SocketState.delete_task(state, id)
     {:ok, state}
   end
 
@@ -93,7 +95,7 @@ defmodule Surrealix.Socket do
       end)
 
     args = Keyword.merge([__receiver__: task], args)
-    WebSockex.cast(pid, {method, args, id})
+    WebSockex.cast(pid, {method, args, id, task})
 
     task_timeout = Keyword.get(opts, :timeout, :infinity)
     res = Task.await(task, task_timeout)
