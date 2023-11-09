@@ -13,22 +13,26 @@ defmodule Surrealix.Socket do
 
   @spec start(Config.socket_opts()) :: WebSockex.on_start()
   def start(opts \\ []) do
-    opts = Keyword.merge(Config.base_conn_opts(), opts)
-
-    hostname = Keyword.get(opts, :hostname)
-    port = Keyword.get(opts, :port)
-
-    WebSockex.start("ws://#{hostname}:#{port}/rpc", __MODULE__, SocketState.new(), opts)
+    generic_start(opts, :start)
   end
 
   @spec start_link(Config.socket_opts()) :: WebSockex.on_start()
   def start_link(opts \\ []) do
+    generic_start(opts, :start_link)
+  end
+
+  defp generic_start(opts, fun_name) do
     opts = Keyword.merge(Config.base_conn_opts(), opts)
 
     hostname = Keyword.get(opts, :hostname)
     port = Keyword.get(opts, :port)
 
-    WebSockex.start_link("ws://#{hostname}:#{port}/rpc", __MODULE__, SocketState.new(), opts)
+    apply(WebSockex, fun_name, [
+      "ws://#{hostname}:#{port}/rpc",
+      __MODULE__,
+      SocketState.new(),
+      opts
+    ])
   end
 
   @spec stop(pid()) :: :ok
