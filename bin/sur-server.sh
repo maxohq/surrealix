@@ -13,7 +13,6 @@ surreal start \
     --allow-scripting \
     --allow-funcs \
     --allow-net \
-    --log trace \
     --bind 0.0.0.0:8000 \
     memory
     ## file:mydatabase.db
