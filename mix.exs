@@ -45,7 +45,7 @@ defmodule Surrealix.MixProject do
   defp package() do
     [
       name: "surrealix",
-      files: ~w(lib .formatter.exs mix.exs README* CHANGELOG* LICENCE*),
+      files: ~w(lib .formatter.exs mix.exs README* CHANGELOG* LICENSE*),
       licenses: ["MIT"],
       links: %{
         "GitHub" => @source_url,
