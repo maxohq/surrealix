@@ -17,11 +17,4 @@ defmodule Surrealix.Telemetry.Logger do
   def handle_event(event, measurements, meta, _) do
     IO.inspect({event, measurements, meta})
   end
-
-  def check do
-    a = System.monotonic_time()
-    Process.sleep(100)
-    b = System.monotonic_time()
-    IO.inspect({b - a, :time})
-  end
 end
