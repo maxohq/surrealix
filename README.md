@@ -83,8 +83,8 @@ Code foundation was taken from https://github.com/joojscript/surrealdb_ex. Since
 
 ## Todo
 
+- [x] handle live query updates properly
+- [x] debug modus with verbose logging
+- [x] integration tests
 - [ ] handle disconnects gracefully
-- [ ] handle live query updates properly
-- [ ] debug modus with verbose logging
-- [ ] integration tests
 - [ ] benchmarks

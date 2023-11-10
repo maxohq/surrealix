@@ -8,6 +8,16 @@ defmodule Surrealix do
   defdelegate stop(pid), to: Socket
 
   @doc """
+  Convenience method, that combines sending an query (live_query) and registering a callback
+
+  Params:
+    sql: string
+    vars: map with variables to interpolate into SQL
+    callback: fn (event, data, config)
+  """
+  defdelegate live_query(pid, sql, vars \\ %{}, callback), to: Socket
+
+  @doc """
   ping
     This method pings the SurrealDB instance
 

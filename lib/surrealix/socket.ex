@@ -46,9 +46,13 @@ defmodule Surrealix.Socket do
     exit(:normal)
   end
 
+  def handle_cast({:register_lq, sql, query_id}, state) do
+    state = SocketState.add_lq(state, sql, query_id)
+    {:ok, state}
+  end
+
   def handle_cast({method, args, id, task}, state) do
     Logger.debug("[surrealix] [handle_cast] #{inspect(state)}")
-
     payload = build_cast_payload(method, args, id)
     state = SocketState.add_task(state, id, task)
     frame = {:text, payload}
@@ -61,7 +65,7 @@ defmodule Surrealix.Socket do
     task = SocketState.get_task(state, id)
 
     if is_nil(task) do
-      # there is no registered task for this ID, it must be a live query update!
+      # No registered task for this ID, must be a live query update
       lq_id = get_in(json, ["result", "id"])
       Surrealix.Dispatch.execute([:live_query, lq_id], json)
     else
@@ -70,8 +74,7 @@ defmodule Surrealix.Socket do
       end
     end
 
-    state = SocketState.delete_task(state, id)
-    {:ok, state}
+    {:ok, SocketState.delete_task(state, id)}
   end
 
   defp exec_method(pid, {method, args}, opts \\ []) do
@@ -140,6 +143,26 @@ defmodule Surrealix.Socket do
       "params" => params
     }
     |> Jason.encode!()
+  end
+
+  @doc """
+  Convenience method that combines sending a (live-)query and registering a callback.
+
+  Params:
+    sql: string
+    vars: map with variables to interpolate into SQL
+    callback: fn (event, data, config)
+  """
+  @spec live_query(pid(), String.t(), map(), (any, any, list() -> any)) :: :ok
+  def live_query(pid, sql, vars \\ %{}, callback) do
+    # TODO: check if SQL somewhat resembles a live query
+    with {:ok, res} <- query(pid, sql, vars),
+         %{"result" => [%{"result" => lq_id}]} <- res do
+      event = [:live_query, lq_id]
+      :ok = Surrealix.Dispatch.attach("#{lq_id}_main", event, callback)
+      :ok = WebSockex.cast(pid, {:register_lq, sql, lq_id})
+      {:ok, res}
+    end
   end
 
   ### API METHODS : START ###
