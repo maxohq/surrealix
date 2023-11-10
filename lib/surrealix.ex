@@ -1,4 +1,4 @@
-## **** GENERATED CODE! see gen/src/TopGenerator.ts for details. ****
+## **** GENERATED CODE! see gen/src/MainGenerator.ts for details. ****
 
 defmodule Surrealix do
   alias Surrealix.Socket, as: Socket

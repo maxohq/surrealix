@@ -1,5 +1,3 @@
-## **** GENERATED CODE! see gen/src/SocketGenerator.ts for details. ****
-
 defmodule Surrealix.Socket do
   use WebSockex
 
@@ -44,7 +42,7 @@ defmodule Surrealix.Socket do
   end
 
   def terminate(reason, state) do
-    IO.puts("Socket terminating:\n#{inspect(reason)}\n\n#{inspect(state)}\n")
+    Logger.debug("Socket terminating:\n#{inspect(reason)}\n\n#{inspect(state)}\n")
     exit(:normal)
   end
 
@@ -79,27 +77,29 @@ defmodule Surrealix.Socket do
     {:ok, SocketState.delete_task(state, id)}
   end
 
-  def exec_method(pid, {method, args}, opts \\ []) do
+  def exec_method(pid, {method, args, task}, opts \\ []) do
     start_time = System.monotonic_time()
     meta = %{method: method, args: args}
     Telemetry.start(:exec_method, meta)
     id = Util.uuid(40)
 
     task =
-      Task.async(fn ->
-        receive do
-          {:ok, msg, ^id} ->
-            if is_map(msg) and Map.has_key?(msg, "error"), do: {:error, msg}, else: {:ok, msg}
+      if !is_nil(task),
+        do: task,
+        else:
+          Task.async(fn ->
+            receive do
+              {:ok, msg, ^id} ->
+                if is_map(msg) and Map.has_key?(msg, "error"), do: {:error, msg}, else: {:ok, msg}
 
-          {:error, reason} ->
-            {:error, reason}
+              {:error, reason} ->
+                {:error, reason}
 
-          e ->
-            {:error, "Unknown Error #{inspect(e)}"}
-        end
-      end)
+              e ->
+                {:error, "Unknown Error #{inspect(e)}"}
+            end
+          end)
 
-    args = Keyword.merge([__receiver__: task], args)
     WebSockex.cast(pid, {method, args, id, task})
 
     task_timeout = Keyword.get(opts, :timeout, :infinity)

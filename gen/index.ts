@@ -1,10 +1,11 @@
-import { SocketGenerator } from "./src/SocketGenerator";
-import { TopGenerator } from "./src/TopGenerator";
+import { ApiGenerator } from "./src/ApiGenerator";
+import { MainGenerator } from "./src/MainGenerator";
 
-const socketGen = new SocketGenerator();
-socketGen.run();
-await Bun.write(import.meta.dir + "/../lib/surrealix/socket.ex", socketGen.content);
 
-const topGen = new TopGenerator();
-topGen.run();
-await Bun.write(import.meta.dir + "/../lib/surrealix.ex", topGen.content);
+const apiGen = new ApiGenerator();
+apiGen.run();
+await Bun.write(import.meta.dir + "/../lib/surrealix/api.ex", apiGen.content);
+
+const mainGen = new MainGenerator();
+mainGen.run();
+await Bun.write(import.meta.dir + "/../lib/surrealix.ex", mainGen.content);

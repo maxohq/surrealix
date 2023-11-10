@@ -4,10 +4,10 @@ import type { IMethod } from "./api";
 import { lpad } from "./utils";
 import dedent from "ts-dedent";
 
-export class TopGenerator extends GenBase {
+export class MainGenerator extends GenBase {
   constructor() {
     super();
-    this.generatorName = "gen/src/TopGenerator.ts";
+    this.generatorName = "gen/src/MainGenerator.ts";
   }
   run() {
     this.logRun();
@@ -24,11 +24,21 @@ export class TopGenerator extends GenBase {
   genStaticFunctions() {
     let content = dedent`
     alias Surrealix.Socket, as: Socket
+    alias Surrealix.Api, as: Api
 
-    defdelegate start_link(), to: Socket
-    defdelegate start_link(opts), to: Socket
-
+    defdelegate start(opts \\\\ []), to: Socket
+    defdelegate start_link(opts \\\\ []), to: Socket
     defdelegate stop(pid), to: Socket
+
+    @doc """
+    Convenience method, that combines sending an query (live_query) and registering a callback
+
+    Params:
+      sql: string
+      vars: map with variables to interpolate into SQL
+      callback: fn (event, data, config)
+    """
+    defdelegate live_query(pid, sql, vars \\\\ %{}, callback), to: Api
     `;
     this.plainPush(lpad(content, "  "));
   }
@@ -52,16 +62,16 @@ export class TopGenerator extends GenBase {
   }
 
   genPayloadMethod(method: IMethod) {
-    this.push(`defdelegate ${method.name}(pid, payload), to: Socket`);
-    this.push(`defdelegate ${method.name}(pid, payload, task), to: Socket`);
+    this.push(`defdelegate ${method.name}(pid, payload), to: Api`);
+    this.push(`defdelegate ${method.name}(pid, payload, task), to: Api`);
     this.push(
-      `defdelegate ${method.name}(pid, payload, task, opts), to: Socket`
+      `defdelegate ${method.name}(pid, payload, task, opts), to: Api`
     );
   }
 
   genInlineMethod(method: IMethod) {
     if (method.parameter.length == 0) {
-      this.push(`defdelegate ${method.name}(pid), to: Socket`);
+      this.push(`defdelegate ${method.name}(pid), to: Api`);
     }
     if (method.parameter.length > 0) {
       // ONLY possible to have default values for optional args in a direct call.
@@ -75,10 +85,10 @@ export class TopGenerator extends GenBase {
         .join(", ");
 
       let params = method.parameter.map((param) => param.name).join(", ");
-      this.push(`defdelegate ${method.name}(pid, ${directParams}), to: Socket`);
-      this.push(`defdelegate ${method.name}(pid, ${params}, task), to: Socket`);
+      this.push(`defdelegate ${method.name}(pid, ${directParams}), to: Api`);
+      this.push(`defdelegate ${method.name}(pid, ${params}, task), to: Api`);
       this.push(
-        `defdelegate ${method.name}(pid, ${params}, task, opts), to: Socket`
+        `defdelegate ${method.name}(pid, ${params}, task, opts), to: Api`
       );
     }
   }
