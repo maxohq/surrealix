@@ -33,9 +33,15 @@ Surrealix.query(pid, "SELECT * FROM type::table($table);", %{table: "person"})
 
 ```elixir
 ## Example with live query callbacks
-Surrealix.live_query(pid, "LIVE SELECT * FROM user;", fn event, data, config ->
+Surrealix.live_query(pid, "LIVE DIFF SELECT * FROM user;", fn event, data, config ->
   IO.inspect({event, data, config}, label: "callback")
 end)
+
+## Example with live query with DIFF
+Surrealix.live_query(pid, "LIVE SELECT DIFF FROM user;", fn event, data, config ->
+  IO.inspect({event, data, config}, label: "callback")
+end)
+
 
 # inspect currently registered live queries
 Surrealix.all_live_queries(pid)
@@ -108,7 +114,6 @@ Code foundation was taken from https://github.com/joojscript/surrealdb_ex. Since
 - [x] debug modus with verbose logging
 - [x] integration tests
 - [ ] handle disconnects gracefully
-- [ ] benchmarks
 
 
 ## Support
