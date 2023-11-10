@@ -31,23 +31,23 @@ defmodule ForTest do
     end
 
     test "for - update", %{pid: pid} do
+      sql_setup = ~s|
+        create person:1 set age = 19;
+        create person:2 set age = 17;
+        create person:3 set age = 18;
+      |
+
       sql = ~s|
-      create person:1 set age = 19;
-      create person:2 set age = 17;
-      create person:3 set age = 18;
       FOR $person IN (SELECT VALUE id FROM person WHERE age >= 18) {
         UPDATE $person SET can_vote = true;
       };
       select * from person where can_vote = true;
       |
-
+      {:ok, _} = Surrealix.query(pid, sql_setup)
       parsed = Surrealix.query(pid, sql) |> extract_res_list()
 
       auto_assert(
         [
-          ok: [%{"age" => 19, "id" => "person:1"}],
-          ok: [%{"age" => 17, "id" => "person:2"}],
-          ok: [%{"age" => 18, "id" => "person:3"}],
           ok: nil,
           ok: [
             %{"age" => 19, "can_vote" => true, "id" => "person:1"},

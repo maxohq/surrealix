@@ -147,29 +147,13 @@ defmodule SelectTest do
         create profile:3 set name = "Prof3";
 
 
-        RELATE profile:1->experience->org:1
-	        SET time.started = time::now()
-        ;
-        RELATE profile:1->experience->org:2
-	        SET time.started = time::now()
-        ;
-        RELATE profile:1->experience->org:3
-	        SET time.started = time::now()
-        ;
-        RELATE profile:1->experience->org:4
-	        SET time.started = time::now()
-        ;
-
-        RELATE profile:2->experience->org:1
-	        SET time.started = time::now()
-        ;
-        RELATE profile:2->experience->org:2
-	        SET time.started = time::now()
-        ;
-
-        RELATE profile:3->experience->org:1
-	        SET time.started = time::now()
-        ;
+        RELATE profile:1->experience->org:1 SET time.started = time::now();
+        RELATE profile:1->experience->org:2 SET time.started = time::now();
+        RELATE profile:1->experience->org:3 SET time.started = time::now();
+        RELATE profile:1->experience->org:4 SET time.started = time::now();
+        RELATE profile:2->experience->org:1 SET time.started = time::now();
+        RELATE profile:2->experience->org:2 SET time.started = time::now();
+        RELATE profile:3->experience->org:1 SET time.started = time::now();
       |
 
       sql = ~s|
