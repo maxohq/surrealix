@@ -12,7 +12,6 @@ defmodule Surrealix.Util do
 
   @doc """
   A small random string generator
-  ## TODO: check performance characteristics
   """
   def uuid(length) do
     :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)

@@ -1,10 +1,32 @@
 defmodule Surrealix.Api do
+  @moduledoc false
+
   alias Surrealix.Config
   alias Surrealix.Socket
   alias Surrealix.Util
 
   defp exec_method(pid, {method, args}, opts \\ []) do
     Socket.exec_method(pid, {method, args}, opts)
+  end
+
+  @doc """
+  Convenience method that combines sending a (live-)query and registering a callback.
+
+  Params:
+    sql: string
+    vars: map with variables to interpolate into SQL
+    callback: fn (event, data, config)
+  """
+  @spec live_query(pid(), String.t(), map(), (any, any, list() -> any)) :: :ok
+  def live_query(pid, sql, vars \\ %{}, callback) do
+    with {:sql_live_check, true} <- {:sql_live_check, Util.is_live_query_stmt(sql)},
+         {:ok, res} <- query(pid, sql, vars),
+         %{"result" => [%{"result" => lq_id}]} <- res do
+      event = [:live_query, lq_id]
+      :ok = Surrealix.Dispatch.attach("#{lq_id}_main", event, callback)
+      :ok = WebSockex.cast(pid, {:register_lq, sql, lq_id})
+      {:ok, res}
+    end
   end
 
   def build_cast_payload(method, args, id) do
@@ -37,26 +59,6 @@ defmodule Surrealix.Api do
       "params" => params
     }
     |> Jason.encode!()
-  end
-
-  @doc """
-  Convenience method that combines sending a (live-)query and registering a callback.
-
-  Params:
-    sql: string
-    vars: map with variables to interpolate into SQL
-    callback: fn (event, data, config)
-  """
-  @spec live_query(pid(), String.t(), map(), (any, any, list() -> any)) :: :ok
-  def live_query(pid, sql, vars \\ %{}, callback) do
-    with {:sql_live_check, true} <- {:sql_live_check, Util.is_live_query_stmt(sql)},
-         {:ok, res} <- query(pid, sql, vars),
-         %{"result" => [%{"result" => lq_id}]} <- res do
-      event = [:live_query, lq_id]
-      :ok = Surrealix.Dispatch.attach("#{lq_id}_main", event, callback)
-      :ok = WebSockex.cast(pid, {:register_lq, sql, lq_id})
-      {:ok, res}
-    end
   end
 
   ### API METHODS : START ###

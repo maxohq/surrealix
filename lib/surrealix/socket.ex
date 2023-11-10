@@ -3,11 +3,11 @@
 defmodule Surrealix.Socket do
   use WebSockex
 
-  alias Surrealix.Config
-  alias Surrealix.Telemetry
-  alias Surrealix.SocketState
-  alias Surrealix.Util
   alias Surrealix.Api
+  alias Surrealix.Config
+  alias Surrealix.SocketState
+  alias Surrealix.Telemetry
+  alias Surrealix.Util
 
   require Logger
 
