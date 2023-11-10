@@ -27,7 +27,7 @@ defmodule Surrealix.Socket do
     generic_start(opts, :start_link)
   end
 
-  defp generic_start(opts, fun_name) do
+  defp generic_start(opts, fun_name) when fun_name in [:start, :start_link] do
     opts = Keyword.merge(Config.base_conn_opts(), opts)
 
     hostname = Keyword.get(opts, :hostname)
