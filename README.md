@@ -41,6 +41,24 @@ end)
 Surrealix.all_live_queries(pid)
 ```
 
+## Telemetry
+Currently library publishes only 3 events:
+```elixir
+events = [
+  [:surrealix, :exec_method, :start],
+  [:surrealix, :exec_method, :stop],
+  [:surrealix, :exec_method, :exception]
+]
+```
+
+In the `meta` there is further information about the method name and the arguments, that were sent to SurrealDB server.
+
+As example we provide a `Surrealix.Telemetry.Logger`, that logs those events to the console.
+
+```elixir
+## Configure basic logger telemetry
+Surrealix.Telemetry.Logger.setup()
+```
 
 ## Configuration
 

@@ -15,6 +15,6 @@ defmodule Surrealix.Telemetry.Logger do
   end
 
   def handle_event(event, measurements, meta, _) do
-    IO.inspect({event, measurements, meta})
+    IO.inspect({event, measurements, meta}, label: :telemetry)
   end
 end
