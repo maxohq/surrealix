@@ -7,3 +7,7 @@ config :logger, :console,
   # level: :debug
 
   level: :warning
+
+config :surrealix, :conn,
+  hostname: "0.0.0.0",
+  port: 8000

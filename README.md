@@ -44,6 +44,18 @@ Surrealix.all_live_queries(pid)
 ```
 
 
+## Configuration
+
+```elixir
+## in config.exs / runtime.exs file
+# default 5000
+config :surrealix, timeout: :infinity
+config :surrealix, :conn,
+  hostname: "0.0.0.0",
+  port: 8000
+```
+
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
