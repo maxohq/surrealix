@@ -17,45 +17,22 @@ Elixir documentation shows raw examples from the SurrealDB docs, so that it's ve
 ## Usage
 
 ```elixir
-{:ok, pid} = Surrealix.start_link(namespace: "test", database: "test", debug: [:trace])
+# {:ok, pid} = Surrealix.start_link(namespace: "test", database: "test", debug: [:trace]) ## for debugging!
+{:ok, pid} = Surrealix.start_link(namespace: "test", database: "test")
 Surrealix.signin(pid, %{user: "root", pass: "root"})
 Surrealix.use(pid, "test", "test")
-
+Surrealix.query(pid, "SELECT * FROM person;")
 Surrealix.query(pid, "SELECT * FROM type::table($table);", %{table: "person"})
-Surrealix.live(pid, "person", true)
-
-## for more complex LIVE queries
-Surrealix.query(pid, "LIVE SELECT * FROM person;")
-Surrealix.query(pid, "LIVE SELECT DIFF FROM person;")
 ```
 
 ```elixir
 ## Example with live query callbacks
-
-{:ok, pid} = Surrealix.start_link(namespace: "test", database: "test")
-Surrealix.signin(pid, %{user: "root", pass: "root"})
-Surrealix.use(pid, "test", "test")
-{:ok,
- %{
-   "result" => [
-     %{
-       "result" => lq_id,
-     }
-   ]
- }} = Surrealix.query(pid, "LIVE SELECT * FROM person;")
-
-event = [:live_query, lq_id]
-Surrealix.Dispatch.attach("logger", event, fn (event, data, config) ->
-    IO.puts ">>>>>> CALLBACK WORKS!"
-    IO.inspect(event, label: :EVENT)
-    IO.inspect(data, label: :DATA)
+Surrealix.live_query(pid, "LIVE SELECT * FROM user;", fn event, data, config ->
+  IO.inspect({event, data, config}, label: "callback")
 end)
 
-## now change data in the person table
-Surrealix.query(pid, "update person:2 set name = 1")
-
-## to remove the callback
-# Surrealix.Dispatch.remove_by_event(event)
+# inspect currently registed live queries
+Surrealix.all_live_queries(pid)
 ```
 
 
@@ -67,7 +44,7 @@ by adding `surrealix` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:surrealix, "~> 0.1.0"}
+    {:surrealix, "~> 0.1"}
   ]
 end
 ```
