@@ -84,14 +84,16 @@ export class ApiGenerator extends GenBase {
     """
     @spec live_query(pid(), String.t(), map(), (any, any, list() -> any)) :: :ok
     def live_query(pid, sql, vars \\\\ %{}, callback) do
-        with {:sql_live_check, true} <- {:sql_live_check, Util.is_live_query_stmt(sql)},
+      with {:sql_live_check, true} <- {:sql_live_check, Util.is_live_query_stmt(sql)},
             {:ok, res} <- query(pid, sql, vars),
             %{"result" => [%{"result" => lq_id}]} <- res do
         event = [:live_query, lq_id]
         :ok = Surrealix.Dispatch.attach("#{lq_id}_main", event, callback)
         :ok = WebSockex.cast(pid, {:register_lq, sql, lq_id})
         {:ok, res}
-        end
+      else
+        {:sql_live_check, false} -> {:error, "Not a live query: \`#{sql}\`!"}
+      end
     end
     `;
 

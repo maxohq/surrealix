@@ -38,6 +38,8 @@ defmodule Surrealix.Api do
       :ok = Surrealix.Dispatch.attach("#{lq_id}_main", event, callback)
       :ok = WebSockex.cast(pid, {:register_lq, sql, lq_id})
       {:ok, res}
+    else
+      {:sql_live_check, false} -> {:error, "Not a live query: `#{sql}`!"}
     end
   end
 

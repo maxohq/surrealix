@@ -25,6 +25,13 @@ defmodule Surrealix.Test do
   describe "live_query" do
     setup [:setup_surrealix]
 
+    test "basic validation that SQL stmt is a live query", %{pid: pid} do
+      {:error, "Not a live query: `SELECT * FROM user;`!"} =
+        Surrealix.live_query(pid, "SELECT * FROM user;", fn _event, _data, _config ->
+          IO.puts("never reached!")
+        end)
+    end
+
     test "callbacks are properly executed", %{pid: pid} do
       testpid = self()
 
