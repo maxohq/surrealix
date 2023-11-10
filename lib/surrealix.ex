@@ -1,6 +1,10 @@
 ## **** GENERATED CODE! see gen/src/MainGenerator.ts for details. ****
 
 defmodule Surrealix do
+  @moduledoc """
+  Main entry module for Surrealix
+  """
+
   alias Surrealix.Socket, as: Socket
   alias Surrealix.Api, as: Api
 

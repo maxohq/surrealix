@@ -1,4 +1,8 @@
 defmodule Surrealix.Socket do
+  @moduledoc """
+  Socket module to wrap the interactions with `WebSockex` process.
+  """
+
   use WebSockex
 
   alias Surrealix.Api
@@ -11,12 +15,14 @@ defmodule Surrealix.Socket do
 
   @type base_connection_opts :: Config.socket_opts()
 
-  @spec start(Config.socket_opts()) :: WebSockex.on_start()
+  @type on_start :: {:ok, pid} | {:error, term}
+
+  @spec start(Config.socket_opts()) :: on_start()
   def start(opts \\ []) do
     generic_start(opts, :start)
   end
 
-  @spec start_link(Config.socket_opts()) :: WebSockex.on_start()
+  @spec start_link(Config.socket_opts()) :: on_start()
   def start_link(opts \\ []) do
     generic_start(opts, :start_link)
   end

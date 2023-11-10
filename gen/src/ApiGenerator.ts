@@ -62,7 +62,9 @@ export class ApiGenerator extends GenBase {
 
   genStaticFunctions() {
     let content = dedent`
-    @moduledoc false
+    @moduledoc """
+    Thin layer over the Websockets API for SurrealDB that is 100% generated from a data-structure.
+    """
 
     alias Surrealix.Config
     alias Surrealix.Socket

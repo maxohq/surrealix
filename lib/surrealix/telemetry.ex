@@ -1,6 +1,6 @@
 defmodule Surrealix.Telemetry do
   @moduledoc """
-  Description of all events
+  Provides conventions to publishing `:telemetry` events
   """
 
   require Logger

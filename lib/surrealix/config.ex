@@ -1,5 +1,7 @@
 defmodule Surrealix.Config do
-  @moduledoc false
+  @moduledoc """
+  Explicit config module to keep configurable options in a single place
+  """
   @type socket_opts :: [
           hostname: String.t(),
           port: integer(),

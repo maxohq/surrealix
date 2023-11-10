@@ -1,7 +1,9 @@
 ## **** GENERATED CODE! see gen/src/ApiGenerator.ts for details. ****
 
 defmodule Surrealix.Api do
-  @moduledoc false
+  @moduledoc """
+  Thin layer over the Websockets API for SurrealDB that is 100% generated from a data-structure.
+  """
 
   alias Surrealix.Config
   alias Surrealix.Socket

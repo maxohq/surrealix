@@ -1,5 +1,7 @@
 defmodule Surrealix.Util do
-  @moduledoc false
+  @moduledoc """
+  Some generic utility functions
+  """
 
   @doc """
   A basic check to make sure the SQL statement is indeed a live query.

@@ -1,5 +1,7 @@
 defmodule Surrealix.HandlerTable do
-  @moduledoc false
+  @moduledoc """
+  Wrapper around ETS to store callbacks for live queries. Modelled after :telemetry.
+  """
   use GenServer
 
   @table __MODULE__

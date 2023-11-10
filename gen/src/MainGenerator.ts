@@ -23,6 +23,10 @@ export class MainGenerator extends GenBase {
 
   genStaticFunctions() {
     let content = dedent`
+    @moduledoc """
+    Main entry module for Surrealix
+    """
+
     alias Surrealix.Socket, as: Socket
     alias Surrealix.Api, as: Api
 

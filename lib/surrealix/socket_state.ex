@@ -1,4 +1,8 @@
 defmodule Surrealix.SocketState do
+  @moduledoc """
+  SocketState module makes testing the State transitions for Socket much simpler
+  """
+
   use Surrealix.Accessible
   alias Surrealix.SocketState
 

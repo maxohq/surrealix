@@ -1,5 +1,7 @@
 defmodule Surrealix.Accessible do
-  @moduledoc false
+  @moduledoc """
+  A vendored package, that makes reaching into deep structs little bit nicer.
+  """
 
   defmacro __using__(_) do
     quote location: :keep do
