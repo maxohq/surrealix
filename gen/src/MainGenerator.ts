@@ -35,6 +35,11 @@ export class MainGenerator extends GenBase {
     defdelegate stop(pid), to: Socket
 
     @doc """
+    Show all currently registered live queries (SQL)
+    """
+    defdelegate all_live_queries(pid), to: Api
+
+    @doc """
     Convenience method, that combines sending an query (live_query) and registering a callback
 
     Params:

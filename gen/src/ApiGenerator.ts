@@ -68,10 +68,18 @@ export class ApiGenerator extends GenBase {
 
     alias Surrealix.Config
     alias Surrealix.Socket
+    alias Surrealix.SocketState
     alias Surrealix.Util
 
     defp exec_method(pid, {method, args, task}, opts \\\\ []) do
-        Socket.exec_method(pid, {method, args, task}, opts)
+      Socket.exec_method(pid, {method, args, task}, opts)
+    end
+
+    @doc """
+    Show all currently registered live queries (SQL)
+    """
+    def all_live_queries(pid) do
+      :sys.get_state(pid) |> SocketState.all_lq()
     end
 
     @doc """
