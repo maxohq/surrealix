@@ -1,23 +1,65 @@
-## **** GENERATED CODE! see gen/src/TopGenerator.ts for details. ****
+defmodule Surrealix.Api do
+  alias Surrealix.Config
+  alias Surrealix.Socket
+  alias Surrealix.Util
 
-defmodule Surrealix do
-  alias Surrealix.Socket, as: Socket
-  alias Surrealix.Api, as: Api
+  defp exec_method(pid, {method, args}, opts \\ []) do
+    Socket.exec_method(pid, {method, args}, opts)
+  end
 
-  defdelegate start(opts \\ []), to: Socket
-  defdelegate start_link(opts \\ []), to: Socket
-  defdelegate stop(pid), to: Socket
+  def build_cast_payload(method, args, id) do
+    params =
+      case method do
+        "ping" -> []
+        "use" -> [args[:ns], args[:db]]
+        "info" -> []
+        "signup" -> [args[:payload]]
+        "signin" -> [args[:payload]]
+        "authenticate" -> [args[:token]]
+        "invalidate" -> []
+        "let" -> [args[:name], args[:value]]
+        "unset" -> [args[:name]]
+        "live" -> [args[:table], args[:diff]]
+        "kill" -> [args[:queryUuid]]
+        "query" -> [args[:sql], args[:vars]]
+        "select" -> [args[:thing]]
+        "create" -> [args[:thing], args[:data]]
+        "insert" -> [args[:thing], args[:data]]
+        "update" -> [args[:thing], args[:data]]
+        "merge" -> [args[:thing], args[:data]]
+        "patch" -> [args[:thing], args[:patches], args[:diff]]
+        "delete" -> [args[:thing]]
+      end
+
+    %{
+      "id" => id,
+      "method" => method,
+      "params" => params
+    }
+    |> Jason.encode!()
+  end
 
   @doc """
-  Convenience method, that combines sending an query (live_query) and registering a callback
+  Convenience method that combines sending a (live-)query and registering a callback.
 
   Params:
     sql: string
     vars: map with variables to interpolate into SQL
     callback: fn (event, data, config)
   """
-  defdelegate live_query(pid, sql, vars \\ %{}, callback), to: Api
+  @spec live_query(pid(), String.t(), map(), (any, any, list() -> any)) :: :ok
+  def live_query(pid, sql, vars \\ %{}, callback) do
+    with {:sql_live_check, true} <- {:sql_live_check, Util.is_live_query_stmt(sql)},
+         {:ok, res} <- query(pid, sql, vars),
+         %{"result" => [%{"result" => lq_id}]} <- res do
+      event = [:live_query, lq_id]
+      :ok = Surrealix.Dispatch.attach("#{lq_id}_main", event, callback)
+      :ok = WebSockex.cast(pid, {:register_lq, sql, lq_id})
+      {:ok, res}
+    end
+  end
 
+  ### API METHODS : START ###
   @doc """
   ping
     This method pings the SurrealDB instance
@@ -34,7 +76,13 @@ defmodule Surrealix do
         "result": null
       }
   """
-  defdelegate ping(pid), to: Api
+  def ping(pid) do
+    exec_method(pid, {"ping", []})
+  end
+
+  def ping(pid, task, opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"ping", [__receiver__: task]}, opts)
+  end
 
   @doc """
   use [ ns, db ]
@@ -56,9 +104,13 @@ defmodule Surrealix do
         "result": null
       }
   """
-  defdelegate use(pid, ns, db), to: Api
-  defdelegate use(pid, ns, db, task), to: Api
-  defdelegate use(pid, ns, db, task, opts), to: Api
+  def use(pid, ns, db) do
+    exec_method(pid, {"use", [ns: ns, db: db]})
+  end
+
+  def use(pid, ns, db, task, opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"use", [ns: ns, db: db, __receiver__: task]}, opts)
+  end
 
   @doc """
   info
@@ -79,7 +131,13 @@ defmodule Surrealix do
         }
       }
   """
-  defdelegate info(pid), to: Api
+  def info(pid) do
+    exec_method(pid, {"info", []})
+  end
+
+  def info(pid, task, opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"info", [__receiver__: task]}, opts)
+  end
 
   @doc """
   signup [ NS, DB, SC, ... ]
@@ -106,9 +164,13 @@ defmodule Surrealix do
         "result": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTdXJyZWFsREIiLCJpYXQiOjE1MTYyMzkwMjIsIm5iZiI6MTUxNjIzOTAyMiwiZXhwIjoxODM2NDM5MDIyLCJOUyI6InRlc3QiLCJEQiI6InRlc3QiLCJTQyI6InVzZXIiLCJJRCI6InVzZXI6dG9iaWUifQ.N22Gp9ze0rdR06McGj1G-h2vu6a6n9IVqUbMFJlOxxA"
       }
   """
-  defdelegate signup(pid, payload), to: Api
-  defdelegate signup(pid, payload, task), to: Api
-  defdelegate signup(pid, payload, task, opts), to: Api
+  def signup(pid, payload) do
+    exec_method(pid, {"signup", [payload: payload]})
+  end
+
+  def signup(pid, payload, task, opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"signup", [payload: payload, __receiver__: task]}, opts)
+  end
 
   @doc """
   signin [ NS, DB, SC, ... ]
@@ -155,9 +217,13 @@ defmodule Surrealix do
         "result": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTdXJyZWFsREIiLCJpYXQiOjE1MTYyMzkwMjIsIm5iZiI6MTUxNjIzOTAyMiwiZXhwIjoxODM2NDM5MDIyLCJOUyI6InRlc3QiLCJEQiI6InRlc3QiLCJTQyI6InVzZXIiLCJJRCI6InVzZXI6dG9iaWUifQ.N22Gp9ze0rdR06McGj1G-h2vu6a6n9IVqUbMFJlOxxA"
       }
   """
-  defdelegate signin(pid, payload), to: Api
-  defdelegate signin(pid, payload, task), to: Api
-  defdelegate signin(pid, payload, task, opts), to: Api
+  def signin(pid, payload) do
+    exec_method(pid, {"signin", [payload: payload]})
+  end
+
+  def signin(pid, payload, task, opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"signin", [payload: payload, __receiver__: task]}, opts)
+  end
 
   @doc """
   authenticate [ token ]
@@ -178,9 +244,13 @@ defmodule Surrealix do
         "result": null
       }
   """
-  defdelegate authenticate(pid, token), to: Api
-  defdelegate authenticate(pid, token, task), to: Api
-  defdelegate authenticate(pid, token, task, opts), to: Api
+  def authenticate(pid, token) do
+    exec_method(pid, {"authenticate", [token: token]})
+  end
+
+  def authenticate(pid, token, task, opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"authenticate", [token: token, __receiver__: task]}, opts)
+  end
 
   @doc """
   invalidate
@@ -198,7 +268,13 @@ defmodule Surrealix do
         "result": null
       }
   """
-  defdelegate invalidate(pid), to: Api
+  def invalidate(pid) do
+    exec_method(pid, {"invalidate", []})
+  end
+
+  def invalidate(pid, task, opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"invalidate", [__receiver__: task]}, opts)
+  end
 
   @doc """
   let [ name, value ]
@@ -220,9 +296,13 @@ defmodule Surrealix do
         "result": null
       }
   """
-  defdelegate let(pid, name, value), to: Api
-  defdelegate let(pid, name, value, task), to: Api
-  defdelegate let(pid, name, value, task, opts), to: Api
+  def let(pid, name, value) do
+    exec_method(pid, {"let", [name: name, value: value]})
+  end
+
+  def let(pid, name, value, task, opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"let", [name: name, value: value, __receiver__: task]}, opts)
+  end
 
   @doc """
   unset [ name ]
@@ -243,9 +323,13 @@ defmodule Surrealix do
         "result": null
       }
   """
-  defdelegate unset(pid, name), to: Api
-  defdelegate unset(pid, name, task), to: Api
-  defdelegate unset(pid, name, task, opts), to: Api
+  def unset(pid, name) do
+    exec_method(pid, {"unset", [name: name]})
+  end
+
+  def unset(pid, name, task, opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"unset", [name: name, __receiver__: task]}, opts)
+  end
 
   @doc """
   live [ table ]
@@ -283,9 +367,13 @@ defmodule Surrealix do
         }
       }
   """
-  defdelegate live(pid, table, diff \\ false), to: Api
-  defdelegate live(pid, table, diff, task), to: Api
-  defdelegate live(pid, table, diff, task, opts), to: Api
+  def live(pid, table, diff \\ false) do
+    exec_method(pid, {"live", [table: table, diff: diff]})
+  end
+
+  def live(pid, table, diff, task, opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"live", [table: table, diff: diff, __receiver__: task]}, opts)
+  end
 
   @doc """
   kill [ queryUuid ]
@@ -306,9 +394,13 @@ defmodule Surrealix do
         "result": null
       }
   """
-  defdelegate kill(pid, queryUuid), to: Api
-  defdelegate kill(pid, queryUuid, task), to: Api
-  defdelegate kill(pid, queryUuid, task, opts), to: Api
+  def kill(pid, queryUuid) do
+    exec_method(pid, {"kill", [queryUuid: queryUuid]})
+  end
+
+  def kill(pid, queryUuid, task, opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"kill", [queryUuid: queryUuid, __receiver__: task]}, opts)
+  end
 
   @doc """
   query [ sql, vars ]
@@ -353,9 +445,13 @@ defmodule Surrealix do
         ]
       }
   """
-  defdelegate query(pid, sql, vars \\ %{}), to: Api
-  defdelegate query(pid, sql, vars, task), to: Api
-  defdelegate query(pid, sql, vars, task, opts), to: Api
+  def query(pid, sql, vars \\ %{}) do
+    exec_method(pid, {"query", [sql: sql, vars: vars]})
+  end
+
+  def query(pid, sql, vars, task, opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"query", [sql: sql, vars: vars, __receiver__: task]}, opts)
+  end
 
   @doc """
   select [ thing ]
@@ -381,9 +477,13 @@ defmodule Surrealix do
         ]
       }
   """
-  defdelegate select(pid, thing), to: Api
-  defdelegate select(pid, thing, task), to: Api
-  defdelegate select(pid, thing, task, opts), to: Api
+  def select(pid, thing) do
+    exec_method(pid, {"select", [thing: thing]})
+  end
+
+  def select(pid, thing, task, opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"select", [thing: thing, __receiver__: task]}, opts)
+  end
 
   @doc """
   create [ thing, data ]
@@ -412,9 +512,13 @@ defmodule Surrealix do
         ]
       }
   """
-  defdelegate create(pid, thing, data \\ %{}), to: Api
-  defdelegate create(pid, thing, data, task), to: Api
-  defdelegate create(pid, thing, data, task, opts), to: Api
+  def create(pid, thing, data \\ %{}) do
+    exec_method(pid, {"create", [thing: thing, data: data]})
+  end
+
+  def create(pid, thing, data, task, opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"create", [thing: thing, data: data, __receiver__: task]}, opts)
+  end
 
   @doc """
   insert [ thing, data ]
@@ -477,9 +581,13 @@ defmodule Surrealix do
         ]
       }
   """
-  defdelegate insert(pid, thing, data \\ %{}), to: Api
-  defdelegate insert(pid, thing, data, task), to: Api
-  defdelegate insert(pid, thing, data, task, opts), to: Api
+  def insert(pid, thing, data \\ %{}) do
+    exec_method(pid, {"insert", [thing: thing, data: data]})
+  end
+
+  def insert(pid, thing, data, task, opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"insert", [thing: thing, data: data, __receiver__: task]}, opts)
+  end
 
   @doc """
   update [ thing, data ]
@@ -507,9 +615,13 @@ defmodule Surrealix do
         }
       }
   """
-  defdelegate update(pid, thing, data \\ %{}), to: Api
-  defdelegate update(pid, thing, data, task), to: Api
-  defdelegate update(pid, thing, data, task, opts), to: Api
+  def update(pid, thing, data \\ %{}) do
+    exec_method(pid, {"update", [thing: thing, data: data]})
+  end
+
+  def update(pid, thing, data, task, opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"update", [thing: thing, data: data, __receiver__: task]}, opts)
+  end
 
   @doc """
   merge [ thing, data ]
@@ -545,9 +657,13 @@ defmodule Surrealix do
         ]
       }
   """
-  defdelegate merge(pid, thing, data \\ %{}), to: Api
-  defdelegate merge(pid, thing, data, task), to: Api
-  defdelegate merge(pid, thing, data, task, opts), to: Api
+  def merge(pid, thing, data \\ %{}) do
+    exec_method(pid, {"merge", [thing: thing, data: data]})
+  end
+
+  def merge(pid, thing, data, task, opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"merge", [thing: thing, data: data, __receiver__: task]}, opts)
+  end
 
   @doc """
   patch [ thing, patches, diff ]
@@ -591,9 +707,17 @@ defmodule Surrealix do
         ]
       }
   """
-  defdelegate patch(pid, thing, patches, diff \\ false), to: Api
-  defdelegate patch(pid, thing, patches, diff, task), to: Api
-  defdelegate patch(pid, thing, patches, diff, task, opts), to: Api
+  def patch(pid, thing, patches, diff \\ false) do
+    exec_method(pid, {"patch", [thing: thing, patches: patches, diff: diff]})
+  end
+
+  def patch(pid, thing, patches, diff, task, opts \\ Config.task_opts_default()) do
+    exec_method(
+      pid,
+      {"patch", [thing: thing, patches: patches, diff: diff, __receiver__: task]},
+      opts
+    )
+  end
 
   @doc """
   delete [ thing ]
@@ -620,7 +744,13 @@ defmodule Surrealix do
         }
       }
   """
-  defdelegate delete(pid, thing), to: Api
-  defdelegate delete(pid, thing, task), to: Api
-  defdelegate delete(pid, thing, task, opts), to: Api
+  def delete(pid, thing) do
+    exec_method(pid, {"delete", [thing: thing]})
+  end
+
+  def delete(pid, thing, task, opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"delete", [thing: thing, __receiver__: task]}, opts)
+  end
+
+  ### API METHODS : FINISH ###
 end
