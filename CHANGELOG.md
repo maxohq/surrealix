@@ -1,3 +1,10 @@
+## v0.1.3 (2023-11-10)
+
+- allow configuration the timeout for WS response
+- remove unused connection params like (user/pass/ns/db), this information has to be provided after establishing the connection
+- some minor cleanups
+
+
 ## v0.1.2 (2023-11-10)
 
 - allow to register callbacks for live queries
