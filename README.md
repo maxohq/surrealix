@@ -14,6 +14,14 @@ The API is 100% code-generated (https://github.com/maxohq/surrealix/blob/main/ge
 
 Elixir documentation shows raw examples from the SurrealDB docs, so that it's very clear what happens behind the covers. There are no futher abstractions, so you can keep referring the official docs while you develop your application.
 
+## Why use Surrealix?
+  - up-to-date on the Websocket API for SurrealDB (https://github.com/maxohq/surrealix/blob/main/gen/src/api.ts)
+  - minimal abstraction over [WebSocket (text protocol)](https://surrealdb.com/docs/integration/websocket/text) for SurrealDB
+  - first-class support for live-query callbacks (currently the ONLY Elixir SDK)
+  - `:telemetry` events for request handling
+  - extensive and very maintainble (thanks to [mneme](https://github.com/zachallaun/mneme)) E2E tests against SurrealDB server (https://github.com/maxohq/surrealix/tree/main/lib/surrealdb)
+
+
 ## Usage
 
 ```elixir
@@ -31,7 +39,7 @@ Surrealix.live_query(pid, "LIVE SELECT * FROM user;", fn event, data, config ->
   IO.inspect({event, data, config}, label: "callback")
 end)
 
-# inspect currently registed live queries
+# inspect currently registered live queries
 Surrealix.all_live_queries(pid)
 ```
 
