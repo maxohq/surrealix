@@ -1,5 +1,13 @@
 # Surrealix
 
+[![CI](https://github.com/maxohq/surrealix/actions/workflows/ci.yml/badge.svg?style=flat)](https://github.com/maxohq/surrealix/actions/workflows/ci.yml)
+[![Hex.pm](https://img.shields.io/hexpm/v/surrealix.svg?style=flat)](https://hex.pm/packages/surrealix)
+[![Docs](https://img.shields.io/badge/hex-docs-lightgreen.svg?style=flat)](https://hexdocs.pm/surrealix)
+[![Total Download](https://img.shields.io/hexpm/dt/surrealix.svg?style=flat)](https://hex.pm/packages/surrealix)
+[![License](https://img.shields.io/hexpm/l/surrealix.svg?style=flat)](https://github.com/maxohq/surrealix/blob/main/LICENCE)
+
+---
+
 Lightweight, correct and up-to-date Elixir SDK for [SurrealDB](https://surrealdb.com/docs/integration/sdks).
 
 The API is 100% code-generated (https://github.com/maxohq/surrealix/blob/main/gen/src/api.ts) and implements the Websocket protocol as documented here - [WebSocket (text protocol)](https://surrealdb.com/docs/integration/websocket/text).
@@ -88,3 +96,17 @@ Code foundation was taken from https://github.com/joojscript/surrealdb_ex. Since
 - [x] integration tests
 - [ ] handle disconnects gracefully
 - [ ] benchmarks
+
+
+## Support
+
+<p>
+  <a href="https://quantor.consulting/?utm_source=github&utm_campaign=surrealix">
+    <img src="https://raw.githubusercontent.com/maxohq/sponsors/main/assets/quantor_consulting_logo.svg"
+      alt="Sponsored by Quantor Consulting" width="210">
+  </a>
+</p>
+
+## License
+
+The lib is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
