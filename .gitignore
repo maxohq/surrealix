@@ -27,3 +27,6 @@ surrealix-*.tar
 
 # SurrealDB shell history
 history.txt
+
+# SurrealDB data
+data.db/
