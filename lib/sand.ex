@@ -20,20 +20,13 @@ defmodule Sand do
           IO.puts("USE...")
           Surrealix.use(pid, "test", "test") |> IO.inspect()
         end,
-        async: true,
-        debug: [:trace]
+        async: true
       )
+
+    Surrealix.query(pid, "select * from user")
 
     # Surrealix.live_query(pid, "LIVE SELECT * FROM user;", fn data, query_id ->
     #   IO.inspect({data, query_id}, label: "callback")
-    # end)
-
-    # Surrealix.on_connect(pid, fn ->
-    #     Surrealix.signin(pid, %{user: "root", pass: "root"})
-    #     Surrealix.use(pid, "test", "test")
-    #     Surrealix.live_query(pid, "LIVE SELECT * FROM user;", fn data, query_id ->
-    #         IO.inspect({data, query_id}, label: "callback")
-    #     end)
     # end)
 
     Surrealix.stop(pid)
