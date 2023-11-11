@@ -1,3 +1,7 @@
+## v0.1.4 (2023-11-11)
+
+- much simpler handling for live query callbacks (https://github.com/maxohq/surrealix/commit/c87fe9b3853d090cb622a2478595b99a213d7fa9)
+
 ## v0.1.3 (2023-11-10)
 
 - allow configuration the timeout for WS response
