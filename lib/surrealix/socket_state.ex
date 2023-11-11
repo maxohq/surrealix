@@ -41,9 +41,9 @@ defmodule Surrealix.SocketState do
   @doc """
   Register a SQL statement for a particular LiveQuery ID
   """
-  def add_lq(state = %SocketState{}, sql, query_id) do
-    lq_sql = MapSet.put(state.lq_sql, sql)
-    item = %{sql: sql, query_id: query_id}
+  def add_lq(state = %SocketState{}, sql, query_id, callback) do
+    lq_sql = MapSet.put(state.lq_sql, {sql, callback})
+    item = %{sql: sql, query_id: query_id, callback: callback}
 
     state
     |> put_in([:lq_running, query_id], item)
@@ -65,7 +65,7 @@ defmodule Surrealix.SocketState do
     {item, state} = pop_in(state, [:lq_running, query_id])
 
     if item do
-      lq_sql = MapSet.delete(state.lq_sql, item.sql)
+      lq_sql = MapSet.delete(state.lq_sql, {item.sql, item.callback})
 
       state
       |> Map.put(:lq_sql, lq_sql)
@@ -78,12 +78,16 @@ defmodule Surrealix.SocketState do
   Remove a LiveQuery by SQL
   """
   def delete_lq_by_sql(state = %SocketState{}, sql) do
-    lq_running =
-      Enum.reject(state.lq_running, fn {_id, value} -> Map.get(value, :sql) == sql end)
-      |> Map.new()
+    found = Enum.find(state.lq_running, fn {_id, value} -> Map.get(value, :sql) == sql end)
 
-    lq_sql = MapSet.delete(state.lq_sql, sql)
-    Map.put(state, :lq_running, lq_running) |> Map.put(:lq_sql, lq_sql)
+    if !is_nil(found) do
+      {key, item} = found
+      lq_running = Map.delete(state.lq_running, key)
+      lq_sql = MapSet.delete(state.lq_sql, {item.sql, item.callback})
+      Map.put(state, :lq_running, lq_running) |> Map.put(:lq_sql, lq_sql)
+    else
+      state
+    end
   end
 
   @doc """

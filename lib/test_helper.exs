@@ -1,3 +1,4 @@
+# ExUnit.start(trace: true) ## -> verbose output, great for debugging!
 ExUnit.start()
 Mneme.start(restart: true)
 

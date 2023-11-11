@@ -36,7 +36,7 @@ defmodule Surrealix.Test do
       testpid = self()
 
       {:ok, _} =
-        Surrealix.live_query(pid, "LIVE SELECT * FROM user;", fn _event, data, _config ->
+        Surrealix.live_query(pid, "LIVE SELECT * FROM user;", fn data, _query_id ->
           send(testpid, {:lq, data})
         end)
 

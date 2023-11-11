@@ -5,9 +5,7 @@ defmodule Surrealix.Application do
 
   @impl true
   def start(_type, _args) do
-    children = [
-      {Surrealix.HandlerTable, []}
-    ]
+    children = []
 
     opts = [strategy: :one_for_one, name: Surrealix.Supervisor]
     Supervisor.start_link(children, opts)
