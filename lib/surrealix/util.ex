@@ -1,6 +1,6 @@
 defmodule Surrealix.Util do
   @moduledoc """
-  Some generic utility functions
+  Generic utility functions
   """
 
   @doc """

@@ -13,7 +13,7 @@ defmodule Surrealix.MixProject do
       deps: deps(),
       package: package(),
       description: description(),
-      test_paths: ["test", "lib"],
+      test_paths: ["lib"],
       test_pattern: "*_test.exs"
     ]
   end
