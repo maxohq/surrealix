@@ -32,11 +32,12 @@ defmodule Surrealix.Socket do
 
     hostname = Keyword.get(opts, :hostname)
     port = Keyword.get(opts, :port)
+    on_connect = Keyword.get(opts, :on_connect)
 
     apply(WebSockex, fun_name, [
       "ws://#{hostname}:#{port}/rpc",
       __MODULE__,
-      SocketState.new(),
+      SocketState.new(on_connect),
       opts
     ])
   end
@@ -50,6 +51,27 @@ defmodule Surrealix.Socket do
   def terminate(reason, state) do
     Logger.debug("Socket terminating:\n#{inspect(reason)}\n\n#{inspect(state)}\n")
     exit(:normal)
+  end
+
+  def handle_disconnect(connection_status_map, state) do
+    IO.inspect(%{status: connection_status_map}, label: "DISCONNECT")
+    attempt_number = connection_status_map.attempt_number
+    to_sleep = attempt_number * 5
+    IO.puts("******** SLEEPING FOR #{to_sleep}ms...")
+
+    Process.sleep(to_sleep)
+    {:reconnect, state}
+  end
+
+  def handle_connect(conn, state = %SocketState{}) do
+    IO.inspect(%{state: state, conn: conn}, label: "CONNECT")
+
+    if(state.on_connect) do
+      IO.inspect(%{pid: self(), state: state, conn: conn}, label: "***** ON_CONNECT callback")
+      # state.on_connect.(self(), state, conn)
+    end
+
+    {:ok, state}
   end
 
   def handle_cast({:register_lq, sql, query_id, callback}, state) do

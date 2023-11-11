@@ -12,9 +12,11 @@ defmodule Surrealix.SocketState do
   """
   defstruct pending: %{},
             lq_running: %{},
-            lq_sql: MapSet.new()
+            lq_sql: MapSet.new(),
+            on_connect: nil
 
   def new(), do: %SocketState{}
+  def new(on_connect), do: %SocketState{on_connect: on_connect}
 
   @doc """
   Register a task for a particular request ID

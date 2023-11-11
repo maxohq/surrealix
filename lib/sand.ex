@@ -1,0 +1,39 @@
+# @callback handle_connect(conn :: WebSockex.Conn.t(), state :: term) :: {:ok, new_state :: term}
+# @callback handle_disconnect(connection_status_map, state :: term) ::
+#               {:ok, new_state}
+#               | {:reconnect, new_state}
+#               | {:reconnect, new_conn :: WebSockex.Conn.t(), new_state}
+#             when new_state: term
+# @callback terminate(close_reason, state :: term) :: any
+
+defmodule Sand do
+  def run do
+    # {:ok, pid} = Surrealix.start(namespace: "test", database: "test", debug: [:trace])
+    {:ok, pid} =
+      Surrealix.start(
+        namespace: "test",
+        database: "test",
+        on_connect: fn pid, _state, _conn ->
+          IO.puts("GOT PID: #{inspect(pid)}")
+          #   {:ok, _} = Surrealix.signin(pid, %{user: "root", pass: "root"})
+          #   {:ok, _} = Surrealix.use(pid, "test", "test")
+        end,
+        async: true,
+        debug: [:trace]
+      )
+
+    # Surrealix.live_query(pid, "LIVE SELECT * FROM user;", fn data, query_id ->
+    #   IO.inspect({data, query_id}, label: "callback")
+    # end)
+
+    # Surrealix.on_connect(pid, fn ->
+    #     Surrealix.signin(pid, %{user: "root", pass: "root"})
+    #     Surrealix.use(pid, "test", "test")
+    #     Surrealix.live_query(pid, "LIVE SELECT * FROM user;", fn data, query_id ->
+    #         IO.inspect({data, query_id}, label: "callback")
+    #     end)
+    # end)
+
+    Surrealix.stop(pid)
+  end
+end
