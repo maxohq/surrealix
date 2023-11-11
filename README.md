@@ -33,13 +33,13 @@ Surrealix.query(pid, "SELECT * FROM type::table($table);", %{table: "person"})
 
 ```elixir
 ## Example with live query callbacks
-Surrealix.live_query(pid, "LIVE DIFF SELECT * FROM user;", fn event, data, config ->
-  IO.inspect({event, data, config}, label: "callback")
+Surrealix.live_query(pid, "LIVE SELECT * FROM user;", fn data, query_id ->
+  IO.inspect({data, query_id}, label: "callback")
 end)
 
 ## Example with live query with DIFF
-Surrealix.live_query(pid, "LIVE SELECT DIFF FROM user;", fn event, data, config ->
-  IO.inspect({event, data, config}, label: "callback")
+Surrealix.live_query(pid, "LIVE SELECT DIFF FROM user;", fn data, query_id ->
+  IO.inspect({data, query_id}, label: "callback")
 end)
 
 

@@ -52,8 +52,8 @@ defmodule Surrealix.Socket do
     exit(:normal)
   end
 
-  def handle_cast({:register_lq, sql, query_id}, state) do
-    state = SocketState.add_lq(state, sql, query_id)
+  def handle_cast({:register_lq, sql, query_id, callback}, state) do
+    state = SocketState.add_lq(state, sql, query_id, callback)
     {:ok, state}
   end
 
@@ -73,7 +73,11 @@ defmodule Surrealix.Socket do
     if is_nil(task) do
       # No registered task for this ID, must be a live query update
       lq_id = get_in(json, ["result", "id"])
-      Surrealix.Dispatch.execute([:live_query, lq_id], json)
+      lq_item = SocketState.get_lq(state, lq_id)
+
+      if(!is_nil(lq_item)) do
+        lq_item.callback.(json, lq_id)
+      end
     else
       if Process.alive?(task.pid) do
         Process.send(task.pid, {:ok, json, id}, [])

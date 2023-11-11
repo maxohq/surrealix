@@ -3,6 +3,7 @@ name: CI
   push:
     branches:
       - main
+  pull_request:
 jobs:
   full-tests:
     name: Full Tests
