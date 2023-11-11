@@ -29,17 +29,13 @@ defmodule Surrealix.Socket do
 
   defp generic_start(opts, fun_name) when fun_name in [:start, :start_link] do
     opts = Keyword.merge(Config.base_conn_opts(), opts)
-
+    on_connect = Keyword.get(opts, :on_connect)
     hostname = Keyword.get(opts, :hostname)
     port = Keyword.get(opts, :port)
-    on_connect = Keyword.get(opts, :on_connect)
 
-    apply(WebSockex, fun_name, [
-      "ws://#{hostname}:#{port}/rpc",
-      __MODULE__,
-      SocketState.new(on_connect),
-      opts
-    ])
+    state = SocketState.new(on_connect)
+    url = "ws://#{hostname}:#{port}/rpc"
+    apply(WebSockex, fun_name, [url, __MODULE__, state, opts])
   end
 
   @spec stop(pid()) :: :ok
@@ -68,7 +64,7 @@ defmodule Surrealix.Socket do
 
     if(state.on_connect) do
       IO.inspect(%{pid: self(), state: state, conn: conn}, label: "***** ON_CONNECT callback")
-      # state.on_connect.(self(), state, conn)
+      Surrealix.RescueProcess.execute_callback({self(), state})
     end
 
     {:ok, state}

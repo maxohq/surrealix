@@ -13,10 +13,12 @@ defmodule Sand do
       Surrealix.start(
         namespace: "test",
         database: "test",
-        on_connect: fn pid, _state, _conn ->
+        on_connect: fn pid, _state ->
           IO.puts("GOT PID: #{inspect(pid)}")
-          #   {:ok, _} = Surrealix.signin(pid, %{user: "root", pass: "root"})
-          #   {:ok, _} = Surrealix.use(pid, "test", "test")
+          IO.puts("SIGNIN...")
+          Surrealix.signin(pid, %{user: "root", pass: "root"}) |> IO.inspect()
+          IO.puts("USE...")
+          Surrealix.use(pid, "test", "test") |> IO.inspect()
         end,
         async: true,
         debug: [:trace]
