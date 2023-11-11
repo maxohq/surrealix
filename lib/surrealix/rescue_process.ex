@@ -29,8 +29,6 @@ defmodule Surrealix.RescueProcess do
 
   @impl true
   def handle_cast({:execute, socket_pid, socket_state = %SocketState{}}, state) do
-    IO.puts("******* handle_cast: execute")
-
     if(!is_nil(socket_state.on_connect)) do
       socket_state.on_connect.(socket_pid, socket_state)
     end

@@ -29,6 +29,6 @@ defmodule Sand do
     #   IO.inspect({data, query_id}, label: "callback")
     # end)
 
-    Surrealix.stop(pid)
+    # Surrealix.stop(pid)
   end
 end

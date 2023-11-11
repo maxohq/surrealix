@@ -7,6 +7,7 @@ defmodule Surrealix.Socket do
 
   alias Surrealix.Api
   alias Surrealix.Config
+  alias Surrealix.RescueProcess
   alias Surrealix.SocketState
   alias Surrealix.Telemetry
   alias Surrealix.Util
@@ -52,7 +53,7 @@ defmodule Surrealix.Socket do
   def handle_disconnect(connection_status_map, state) do
     IO.inspect(%{status: connection_status_map}, label: "DISCONNECT")
     attempt_number = connection_status_map.attempt_number
-    to_sleep = attempt_number * 5
+    to_sleep = attempt_number * 20
     IO.puts("******** SLEEPING FOR #{to_sleep}ms...")
 
     Process.sleep(to_sleep)
@@ -63,8 +64,7 @@ defmodule Surrealix.Socket do
     IO.inspect(%{state: state, conn: conn}, label: "CONNECT")
 
     if(state.on_connect) do
-      IO.inspect(%{pid: self(), state: state, conn: conn}, label: "***** ON_CONNECT callback")
-      Surrealix.RescueProcess.execute_callback({self(), state})
+      RescueProcess.execute_callback({self(), state})
     end
 
     {:ok, state}
