@@ -20,5 +20,7 @@ defmodule Surrealix.Config do
   def base_conn_opts, do: @base_connection_opts
 
   @timeout Application.compile_env(:surrealix, :timeout, 5000)
+
+  def default_timeout, do: @timeout
   def task_opts_default, do: [timeout: @timeout]
 end

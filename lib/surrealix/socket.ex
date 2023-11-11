@@ -134,7 +134,7 @@ defmodule Surrealix.Socket do
 
     WebSockex.cast(pid, {method, args, id, task})
 
-    task_timeout = Keyword.get(opts, :timeout, :infinity)
+    task_timeout = Keyword.get(opts, :timeout, Config.default_timeout())
     res = Task.await(task, task_timeout)
     Telemetry.stop(:exec_method, start_time, meta)
     res
