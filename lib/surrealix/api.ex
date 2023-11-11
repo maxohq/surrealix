@@ -27,9 +27,9 @@ defmodule Surrealix.Api do
   Params:
       sql: string
       vars: map with variables to interpolate into SQL
-      callback: fn (event, data, config)
+      callback: fn (data, live_query_id)
   """
-  @spec live_query(pid(), String.t(), map(), (any, any, list() -> any)) :: :ok
+  @spec live_query(pid(), String.t(), map(), (any, String.t() -> any)) :: :ok
   def live_query(pid, sql, vars \\ %{}, callback) do
     with {:sql_live_check, true} <- {:sql_live_check, Util.is_live_query_stmt(sql)},
          {:ok, res} <- query(pid, sql, vars),
