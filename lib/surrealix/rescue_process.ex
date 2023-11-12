@@ -1,6 +1,6 @@
 defmodule Surrealix.RescueProcess do
   @moduledoc """
-  This module is reponsible to execute callbacks for on_connect  / re-connect hooks.
+  This module is reponsible to execute callbacks for on-connect  / re-connect hooks.
 
   Since we usually like to prepare the websocket connections by executing some further commands on it,
   this blocks the websockex loop if we try it directly in the `handle_connect` callback.
@@ -30,6 +30,7 @@ defmodule Surrealix.RescueProcess do
   @impl true
   def handle_cast({:execute, socket_pid, socket_state = %SocketState{}}, state) do
     if(!is_nil(socket_state.on_connect)) do
+      Surrealix.set_connected(socket_pid, false)
       ## this is to login / and pick ns&db
       socket_state.on_connect.(socket_pid, socket_state)
       # now reconnect Live queries
