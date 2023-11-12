@@ -54,22 +54,23 @@ defmodule Surrealix.Socket do
   end
 
   def terminate(reason, state) do
-    Logger.debug("Socket terminating:\n#{inspect(reason)}\n\n#{inspect(state)}\n")
+    debug("terminate", reason: reason, state: state)
     exit(:normal)
   end
 
   def handle_disconnect(connection_status_map, state) do
-    IO.inspect(%{status: connection_status_map}, label: "DISCONNECT")
     attempt_number = connection_status_map.attempt_number
     to_sleep = attempt_number * 20
-    IO.puts("******** SLEEPING FOR #{to_sleep}ms...")
 
+    debug("handle_disconnect", status: connection_status_map)
+    debug("handle_disconnect", "******** SLEEPING FOR #{to_sleep}ms...")
     Process.sleep(to_sleep)
+
     {:reconnect, state}
   end
 
   def handle_connect(conn, state = %SocketState{}) do
-    IO.inspect(%{state: state, conn: conn}, label: "CONNECT")
+    debug("handle_connect", state: state, conn: conn)
 
     if(state.on_connect) do
       RescueProcess.execute_callback({self(), state})
@@ -94,7 +95,7 @@ defmodule Surrealix.Socket do
   end
 
   def handle_cast({method, args, id, task}, state) do
-    Logger.debug("[surrealix] [handle_cast] #{inspect(state)}")
+    debug("handle_cast", state)
     payload = Api.build_cast_payload(method, args, id)
     state = SocketState.add_task(state, id, task)
     frame = {:text, payload}
@@ -152,5 +153,9 @@ defmodule Surrealix.Socket do
     res = Task.await(task, task_timeout)
     Telemetry.stop(:exec_method, start_time, meta)
     res
+  end
+
+  defp debug(area, data) do
+    Logger.debug("[surrealix] [#{area}] #{inspect(data)}")
   end
 end
