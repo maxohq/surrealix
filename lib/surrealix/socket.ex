@@ -7,6 +7,7 @@ defmodule Surrealix.Socket do
 
   alias Surrealix.Api
   alias Surrealix.Config
+  alias Surrealix.Patiently
   alias Surrealix.RescueProcess
   alias Surrealix.SocketState
   alias Surrealix.Telemetry
@@ -15,7 +16,6 @@ defmodule Surrealix.Socket do
   require Logger
 
   @type base_connection_opts :: Config.socket_opts()
-
   @type on_start :: {:ok, pid} | {:error, term}
 
   @spec start(Config.socket_opts()) :: on_start()
@@ -30,9 +30,9 @@ defmodule Surrealix.Socket do
 
   defp generic_start(opts, fun_name) when fun_name in [:start, :start_link] do
     opts = Keyword.merge(Config.base_conn_opts(), opts)
-    on_connect = Keyword.get(opts, :on_connect)
-    hostname = Keyword.get(opts, :hostname)
     port = Keyword.get(opts, :port)
+    hostname = Keyword.get(opts, :hostname)
+    on_connect = Keyword.get(opts, :on_connect)
 
     state = SocketState.new(on_connect)
     url = "ws://#{hostname}:#{port}/rpc"
@@ -45,8 +45,12 @@ defmodule Surrealix.Socket do
     :ok
   end
 
-  def set_connected(pid, value) do
-    WebSockex.cast(pid, {:set_connected, value})
+  def wait_until_crud_ready(pid) do
+    Patiently.wait_for(fn -> SocketState.is_crud_ready(:sys.get_state(pid)) end)
+  end
+
+  def set_crud_ready(pid, value) do
+    WebSockex.cast(pid, {:set_crud_ready, value})
   end
 
   def reset_live_queries(pid) do
@@ -56,72 +60,6 @@ defmodule Surrealix.Socket do
   def terminate(reason, state) do
     debug("terminate", reason: reason, state: state)
     exit(:normal)
-  end
-
-  def handle_disconnect(connection_status_map, state) do
-    attempt_number = connection_status_map.attempt_number
-    to_sleep = attempt_number * 20
-
-    debug("handle_disconnect", status: connection_status_map)
-    debug("handle_disconnect", "******** SLEEPING FOR #{to_sleep}ms...")
-    Process.sleep(to_sleep)
-
-    {:reconnect, state}
-  end
-
-  def handle_connect(conn, state = %SocketState{}) do
-    debug("handle_connect", state: state, conn: conn)
-
-    if(state.on_connect) do
-      RescueProcess.execute_callback({self(), state})
-    end
-
-    {:ok, state}
-  end
-
-  def handle_cast({:register_lq, sql, query_id, callback}, state) do
-    state = SocketState.add_lq(state, sql, query_id, callback)
-    {:ok, state}
-  end
-
-  def handle_cast({:reset_live_queries}, state) do
-    state = SocketState.reset_lq(state)
-    {:ok, state}
-  end
-
-  def handle_cast({:set_connected, value}, state) do
-    state = SocketState.set_connected(state, value)
-    {:ok, state}
-  end
-
-  def handle_cast({method, args, id, task}, state) do
-    debug("handle_cast", state)
-    payload = Api.build_cast_payload(method, args, id)
-    state = SocketState.add_task(state, id, task)
-    frame = {:text, payload}
-    {:reply, frame, state}
-  end
-
-  def handle_frame({_type, msg}, state) do
-    json = Jason.decode!(msg)
-    id = Map.get(json, "id")
-    task = SocketState.get_task(state, id)
-
-    if is_nil(task) do
-      # No registered task for this ID, must be a live query update
-      lq_id = get_in(json, ["result", "id"])
-      lq_item = SocketState.get_lq(state, lq_id)
-
-      if(!is_nil(lq_item)) do
-        lq_item.callback.(json, lq_id)
-      end
-    else
-      if Process.alive?(task.pid) do
-        Process.send(task.pid, {:ok, json, id}, [])
-      end
-    end
-
-    {:ok, SocketState.delete_task(state, id)}
   end
 
   def exec_method(pid, {method, args, task}, opts \\ []) do
@@ -153,6 +91,72 @@ defmodule Surrealix.Socket do
     res = Task.await(task, task_timeout)
     Telemetry.stop(:exec_method, start_time, meta)
     res
+  end
+
+  ####################################
+  # CALLBACKS
+  ####################################
+
+  def handle_connect(conn, state = %SocketState{}) do
+    debug("handle_connect", state: state, conn: conn)
+
+    if(state.on_connect) do
+      RescueProcess.execute_callback({self(), state})
+    end
+
+    {:ok, state}
+  end
+
+  def handle_disconnect(connection_status_map, state) do
+    attempt_number = connection_status_map.attempt_number
+    to_sleep = attempt_number * 20
+
+    debug("handle_disconnect", status: connection_status_map)
+    debug("handle_disconnect", "******** SLEEPING FOR #{to_sleep}ms...")
+    Process.sleep(to_sleep)
+
+    {:reconnect, state}
+  end
+
+  def handle_cast({:register_live_query, sql, query_id, callback}, state) do
+    {:ok, SocketState.register_live_query(state, sql, query_id, callback)}
+  end
+
+  def handle_cast({:reset_live_queries}, state) do
+    {:ok, SocketState.reset_live_queries(state)}
+  end
+
+  def handle_cast({:set_crud_ready, value}, state) do
+    {:ok, SocketState.set_crud_ready(state, value)}
+  end
+
+  def handle_cast({method, args, id, task}, state) do
+    debug("handle_cast", state)
+    payload = Api.build_cast_payload(method, args, id)
+
+    {:reply, {:text, payload}, SocketState.register_task(state, id, task)}
+  end
+
+  def handle_frame({_type, msg}, state) do
+    json = Jason.decode!(msg)
+    id = Map.get(json, "id")
+    task = SocketState.get_task(state, id)
+
+    if is_nil(task) do
+      # No registered task for this ID, must be a live query update
+      lq_id = get_in(json, ["result", "id"])
+      lq_item = SocketState.get_live_query(state, lq_id)
+
+      if(!is_nil(lq_item)) do
+        lq_item.callback.(json, lq_id)
+      end
+    else
+      if Process.alive?(task.pid) do
+        Process.send(task.pid, {:ok, json, id}, [])
+      end
+    end
+
+    {:ok, SocketState.delete_task(state, id)}
   end
 
   defp debug(area, data) do

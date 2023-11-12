@@ -9,8 +9,10 @@ defmodule Sand do
         end
       )
 
-    Surrealix.Patiently.wait_for(fn -> :sys.get_state(pid) |> Map.get(:connected) == true end)
+    # blocks until the `on_connect` callback is executed
+    Surrealix.wait_until_crud_ready(pid)
 
+    # now we can execute normal "CRUD" queries
     Surrealix.live_query(pid, "LIVE SELECT * FROM user;", fn data, query_id ->
       IO.inspect({data, query_id}, label: "callback")
     end)
