@@ -14,10 +14,10 @@ defmodule Surrealix.SocketState do
             lq_running: %{},
             lq_sql: MapSet.new(),
             crud_ready: false,
-            on_connect: nil
+            on_auth: nil
 
   def new(), do: %SocketState{}
-  def new(on_connect), do: %SocketState{on_connect: on_connect}
+  def new(on_auth), do: %SocketState{on_auth: on_auth}
 
   def set_crud_ready(state = %SocketState{}, value) do
     put_in(state, [:crud_ready], value)

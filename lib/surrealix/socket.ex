@@ -32,9 +32,9 @@ defmodule Surrealix.Socket do
     opts = Keyword.merge(Config.base_conn_opts(), opts)
     port = Keyword.get(opts, :port)
     hostname = Keyword.get(opts, :hostname)
-    on_connect = Keyword.get(opts, :on_connect)
+    on_auth = Keyword.get(opts, :on_auth)
 
-    state = SocketState.new(on_connect)
+    state = SocketState.new(on_auth)
     url = "ws://#{hostname}:#{port}/rpc"
     apply(WebSockex, fun_name, [url, __MODULE__, state, opts])
   end
@@ -100,7 +100,7 @@ defmodule Surrealix.Socket do
   def handle_connect(conn, state = %SocketState{}) do
     debug("handle_connect", state: state, conn: conn)
 
-    if(state.on_connect) do
+    if(state.on_auth) do
       RescueProcess.execute_callback({self(), state})
     end
 

@@ -49,7 +49,7 @@ Surrealix.all_live_queries(pid)
 
 ## Handling reconnection
 
-To properly deal with connection drops, provide an `on_connect`-callback when starting the a Surrealix Socket. Usually on_connect callbacks has logic to authenticate the connection and select a namespace / database.
+To properly deal with connection drops, provide an `on_auth`-callback when starting the a Surrealix Socket. Usually on_auth callbacks has logic to authenticate the connection and select a namespace / database.
 
 This callback is called in a non-blocking fashion, so it's important to wait until the connection is ready for further use. This is done via `Surrealix.wait_until_crud_ready(pid)` function, that implements busy-waiting intil auth for connection is finished.
 
@@ -58,14 +58,14 @@ Live queries that were setup via `Surrealix.live_query(pid, sql, callback)` func
 ```elixir
 {:ok, pid} =
     Surrealix.start(
-      on_connect: fn pid, _state ->
+      on_auth: fn pid, _state ->
         IO.puts("PID: #{inspect(pid)}")
         Surrealix.signin(pid, %{user: "root", pass: "root"}) |> IO.inspect(label: :signin)
         Surrealix.use(pid, "test", "test") |> IO.inspect(label: :use)
       end
     )
 
-# blocks until the `on_connect` callback is executed
+# blocks until the `on_auth` callback is executed
 Surrealix.wait_until_crud_ready(pid)
 
 # now we can execute queries, that require auth

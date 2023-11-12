@@ -2,14 +2,14 @@ defmodule Sand do
   def run do
     {:ok, pid} =
       Surrealix.start(
-        on_connect: fn pid, _state ->
+        on_auth: fn pid, _state ->
           IO.puts("PID: #{inspect(pid)}")
           Surrealix.signin(pid, %{user: "root", pass: "root"}) |> IO.inspect(label: :signin)
           Surrealix.use(pid, "test", "test") |> IO.inspect(label: :use)
         end
       )
 
-    # blocks until the `on_connect` callback is executed
+    # blocks until the `on_auth` callback is executed
     Surrealix.wait_until_crud_ready(pid)
 
     # now we can execute normal "CRUD" queries
