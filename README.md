@@ -11,19 +11,36 @@
 Lightweight, correct and up-to-date Elixir SDK for [SurrealDB](https://surrealdb.com/docs/integration/sdks).
 
 ## Why use Surrealix?
-  - up-to-date on the Websocket API for SurrealDB (https://github.com/maxohq/surrealix/blob/main/gen/src/api.ts) - via code generation
-  - minimal abstraction over [WebSocket (text protocol)](https://surrealdb.com/docs/integration/websocket/text) for SurrealDB
-  - Elixir documentation shows raw examples from the SurrealDB docs, so that it's very clear what happens behind the covers. You can keep referring the official docs!
-  - first-class support for live-query callbacks (the only Elixir SDK providing it)
-  - working re-connection handling that includes:
-    - re-executing the 'on_auth' callback
-    - re-establishing subscriptions to active live queries
-  - verbose logging
-    - `config :logger, :console, level: :debug`
-    - `Surrealix.start_link(debug: [:trace])`
-  - `:telemetry` events for request handling
-  - extensive and very maintainable (thanks to [mneme](https://github.com/zachallaun/mneme)) E2E tests against SurrealDB server (https://github.com/maxohq/surrealix/tree/main/lib/surrealdb)
-  - tests run in isolated databases, that are removed after each test completion, so there is no danger of overwriting any local development data
+  - currently the most full-featured SurrealDB SKD for Elixir
+
+  - API
+    - up-to-date on the Websocket API for SurrealDB (https://github.com/maxohq/surrealix/blob/main/gen/src/api.ts) - via code generation
+    - minimal abstraction over [WebSocket (text protocol)](https://surrealdb.com/docs/integration/websocket/text) for SurrealDB
+    - Elixir documentation shows raw examples from the SurrealDB docs, so that it's very clear what happens behind the covers. You can keep referring the official docs!
+
+  - Live Queries
+    - the only Elixir SDK to provide first-class support for live-query callbacks
+
+  - Reconnection
+    - working re-connection handling that includes:
+      - re-executing the 'on_auth' callback
+      - re-establishing subscriptions for active live queries
+
+  - Logging
+    - verbose logging via:
+      - `config :logger, :console, level: :debug`
+      - `Surrealix.start_link(debug: [:trace])` (from WebSockex)
+
+  - Telemetry
+    - `:telemetry` events for request handling
+      - `Surrealix.Telemetry.Logger.setup()` for STDOUT events
+
+  - Testing
+    - extensive, readable and maintainable E2E test suite
+    - uses [mneme](https://github.com/zachallaun/mneme) to update inline snapshots without any effort
+    - tests run on isolated databases, that are removed after each test completion. Your local data stays safe!
+    - uses [maxo_test_iex](https://github.com/maxohq/maxo_test_iex) for rapid feedbaack during local development
+
 
 
 ## Usage
