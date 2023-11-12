@@ -31,7 +31,7 @@ defmodule Surrealix.RescueProcess do
   def handle_cast({:execute, socket_pid, socket_state = %SocketState{}}, _state) do
     if(!is_nil(socket_state.on_auth)) do
       # mark as not ready to execute normal CRUD queries
-      Surrealix.set_crud_ready(socket_pid, false)
+      Surrealix.set_auth_ready(socket_pid, false)
       # on_auth callback used to login / and pick NS / DB
       socket_state.on_auth.(socket_pid, socket_state)
       # now reconnect live queries
@@ -42,7 +42,7 @@ defmodule Surrealix.RescueProcess do
         Surrealix.live_query(socket_pid, sql, callback)
       end
 
-      Surrealix.set_crud_ready(socket_pid, true)
+      Surrealix.set_auth_ready(socket_pid, true)
     end
 
     {:noreply, []}

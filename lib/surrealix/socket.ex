@@ -45,12 +45,12 @@ defmodule Surrealix.Socket do
     :ok
   end
 
-  def wait_until_crud_ready(pid) do
-    Patiently.wait_for(fn -> SocketState.is_crud_ready(:sys.get_state(pid)) end)
+  def wait_until_auth_ready(pid) do
+    Patiently.wait_for(fn -> SocketState.is_auth_ready(:sys.get_state(pid)) end)
   end
 
-  def set_crud_ready(pid, value) do
-    WebSockex.cast(pid, {:set_crud_ready, value})
+  def set_auth_ready(pid, value) do
+    WebSockex.cast(pid, {:set_auth_ready, value})
   end
 
   def reset_live_queries(pid) do
@@ -126,8 +126,8 @@ defmodule Surrealix.Socket do
     {:ok, SocketState.reset_live_queries(state)}
   end
 
-  def handle_cast({:set_crud_ready, value}, state) do
-    {:ok, SocketState.set_crud_ready(state, value)}
+  def handle_cast({:set_auth_ready, value}, state) do
+    {:ok, SocketState.set_auth_ready(state, value)}
   end
 
   def handle_cast({method, args, id, task}, state) do

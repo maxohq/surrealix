@@ -13,18 +13,18 @@ defmodule Surrealix.SocketState do
   defstruct pending: %{},
             lq_running: %{},
             lq_sql: MapSet.new(),
-            crud_ready: false,
+            auth_ready: false,
             on_auth: nil
 
   def new(), do: %SocketState{}
   def new(on_auth), do: %SocketState{on_auth: on_auth}
 
-  def set_crud_ready(state = %SocketState{}, value) do
-    put_in(state, [:crud_ready], value)
+  def set_auth_ready(state = %SocketState{}, value) do
+    put_in(state, [:auth_ready], value)
   end
 
-  def is_crud_ready(state = %SocketState{}) do
-    state.crud_ready == true
+  def is_auth_ready(state = %SocketState{}) do
+    state.auth_ready == true
   end
 
   @doc """

@@ -17,8 +17,8 @@ defmodule Surrealix do
   """
   defdelegate all_live_queries(pid), to: Api
   defdelegate reset_live_queries(pid), to: Socket
-  defdelegate set_crud_ready(pid, value), to: Socket
-  defdelegate wait_until_crud_ready(pid), to: Socket
+  defdelegate set_auth_ready(pid, value), to: Socket
+  defdelegate wait_until_auth_ready(pid), to: Socket
 
   @doc """
   Convenience method, that combines sending an query (live_query) and registering a callback

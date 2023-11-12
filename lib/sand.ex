@@ -10,7 +10,7 @@ defmodule Sand do
       )
 
     # blocks until the `on_auth` callback is executed
-    Surrealix.wait_until_crud_ready(pid)
+    Surrealix.wait_until_auth_ready(pid)
 
     # now we can execute normal "CRUD" queries
     Surrealix.live_query(pid, "LIVE SELECT * FROM user;", fn data, query_id ->
