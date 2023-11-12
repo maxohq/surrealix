@@ -70,8 +70,9 @@ Surrealix.Telemetry.Logger.setup()
 
 ```elixir
 ## in config.exs / runtime.exs file
-# default 5000
-config :surrealix, timeout: :infinity
+config :surrealix, backoff_max: 2000
+config :surrealix, backoff_step: 50
+config :surrealix, timeout: :infinity # default 5000
 config :surrealix, :conn,
   hostname: "0.0.0.0",
   port: 8000

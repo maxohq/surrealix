@@ -1,6 +1,8 @@
-## v0.1.5 (xxx)
+## v0.1.5 (2023-11-12)
 
 - graceful reconnection handing
+- ability to register on-connect callbacks
+- ability to configure max backoff / step duration for connection retries
 
 ## v0.1.4 (2023-11-11)
 

@@ -23,4 +23,9 @@ defmodule Surrealix.Config do
 
   def default_timeout, do: @timeout
   def task_opts_default, do: [timeout: @timeout]
+
+  @backoff_max Application.compile_env(:surrealix, :backoff_max, 2000)
+  @backoff_step Application.compile_env(:surrealix, :backoff_step, 50)
+  def backoff_max, do: @backoff_max
+  def backoff_step, do: @backoff_step
 end

@@ -109,7 +109,7 @@ defmodule Surrealix.Socket do
 
   def handle_disconnect(connection_status_map, state) do
     attempt_number = connection_status_map.attempt_number
-    to_sleep = attempt_number * 20
+    to_sleep = min(Config.backoff_max(), attempt_number * Config.backoff_step())
 
     debug("handle_disconnect", status: connection_status_map)
     debug("handle_disconnect", "******** SLEEPING FOR #{to_sleep}ms...")
