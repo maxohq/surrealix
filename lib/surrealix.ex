@@ -16,6 +16,8 @@ defmodule Surrealix do
   Show all currently registered live queries (SQL)
   """
   defdelegate all_live_queries(pid), to: Api
+  defdelegate reset_live_queries(pid), to: Socket
+  defdelegate set_connected(pid, value), to: Socket
 
   @doc """
   Convenience method, that combines sending an query (live_query) and registering a callback

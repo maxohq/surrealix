@@ -13,10 +13,15 @@ defmodule Surrealix.SocketState do
   defstruct pending: %{},
             lq_running: %{},
             lq_sql: MapSet.new(),
+            connected: false,
             on_connect: nil
 
   def new(), do: %SocketState{}
   def new(on_connect), do: %SocketState{on_connect: on_connect}
+
+  def set_connected(state = %SocketState{}, value) do
+    put_in(state, [:connected], value)
+  end
 
   @doc """
   Register a task for a particular request ID
@@ -90,6 +95,10 @@ defmodule Surrealix.SocketState do
     else
       state
     end
+  end
+
+  def reset_lq(state = %SocketState{}) do
+    Map.put(state, :lq_running, %{}) |> Map.put(:lq_sql, MapSet.new())
   end
 
   @doc """

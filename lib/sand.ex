@@ -14,18 +14,24 @@ defmodule Sand do
         namespace: "test",
         database: "test",
         on_connect: fn pid, _state ->
+          Surrealix.set_connected(pid, false)
           IO.puts("GOT PID: #{inspect(pid)}")
           IO.puts("SIGNIN...")
           Surrealix.signin(pid, %{user: "root", pass: "root"}) |> IO.inspect(label: :signin)
           IO.puts("USE...")
           Surrealix.use(pid, "test", "test") |> IO.inspect(label: :use)
-
-          Surrealix.live_query(pid, "LIVE SELECT * FROM user;", fn data, query_id ->
-            IO.inspect({data, query_id}, label: "callback")
-          end)
-        end,
-        async: true
+        end
       )
+
+    Surrealix.Patiently.wait_for(fn -> :sys.get_state(pid) |> Map.get(:connected) == true end)
+
+    Surrealix.live_query(pid, "LIVE SELECT * FROM user;", fn data, query_id ->
+      IO.inspect({data, query_id}, label: "callback")
+    end)
+
+    Surrealix.live_query(pid, "LIVE SELECT * FROM person;", fn data, query_id ->
+      IO.inspect({data, query_id}, label: "callback")
+    end)
 
     # Surrealix.live_query(pid, "LIVE SELECT * FROM user;", fn data, query_id ->
     #   IO.inspect({data, query_id}, label: "callback")

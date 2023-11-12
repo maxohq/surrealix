@@ -45,6 +45,14 @@ defmodule Surrealix.Socket do
     :ok
   end
 
+  def set_connected(pid, value) do
+    WebSockex.cast(pid, {:set_connected, value})
+  end
+
+  def reset_live_queries(pid) do
+    WebSockex.cast(pid, {:reset_live_queries})
+  end
+
   def terminate(reason, state) do
     Logger.debug("Socket terminating:\n#{inspect(reason)}\n\n#{inspect(state)}\n")
     exit(:normal)
@@ -72,6 +80,16 @@ defmodule Surrealix.Socket do
 
   def handle_cast({:register_lq, sql, query_id, callback}, state) do
     state = SocketState.add_lq(state, sql, query_id, callback)
+    {:ok, state}
+  end
+
+  def handle_cast({:reset_live_queries}, state) do
+    state = SocketState.reset_lq(state)
+    {:ok, state}
+  end
+
+  def handle_cast({:set_connected, value}, state) do
+    state = SocketState.set_connected(state, value)
     {:ok, state}
   end
 
