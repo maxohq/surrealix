@@ -1,4 +1,7 @@
-defmodule Sand do
+defmodule Surrealix.Sandbox do
+  @moduledoc """
+  A small module to quickly test reconnection logic during development
+  """
   def run do
     {:ok, pid} =
       Surrealix.start(
