@@ -45,14 +45,30 @@ defmodule Surrealix.Socket do
     :ok
   end
 
+  @doc """
+  Show all currently registered live queries (SQL)
+  """
+  def all_live_queries(pid) do
+    SocketState.all_live_queries(:sys.get_state(pid))
+  end
+
+  @doc """
+  Busy-wait until the `on_auth` callback is executed
+  """
   def wait_until_auth_ready(pid) do
     Patiently.wait_for(fn -> SocketState.is_auth_ready(:sys.get_state(pid)) end)
   end
 
+  @doc """
+  Switch for `auth_ready` boolean flag
+  """
   def set_auth_ready(pid, value) do
     WebSockex.cast(pid, {:set_auth_ready, value})
   end
 
+  @doc """
+  Reset `running` live queries status, used after reconnection
+  """
   def reset_live_queries(pid) do
     WebSockex.cast(pid, {:reset_live_queries})
   end
@@ -62,6 +78,9 @@ defmodule Surrealix.Socket do
     exit(:normal)
   end
 
+  @doc """
+  Main method to send requests in blocking fashion to SurrealDB
+  """
   def exec_method(pid, {method, args, task}, opts \\ []) do
     start_time = System.monotonic_time()
     meta = %{method: method, args: args}

@@ -4,18 +4,14 @@ defmodule Surrealix do
   @moduledoc """
   Main entry module for Surrealix
   """
-
-  alias Surrealix.Socket, as: Socket
   alias Surrealix.Api, as: Api
+  alias Surrealix.Socket, as: Socket
 
   defdelegate start(opts \\ []), to: Socket
   defdelegate start_link(opts \\ []), to: Socket
   defdelegate stop(pid), to: Socket
 
-  @doc """
-  Show all currently registered live queries (SQL)
-  """
-  defdelegate all_live_queries(pid), to: Api
+  defdelegate all_live_queries(pid), to: Socket
   defdelegate reset_live_queries(pid), to: Socket
   defdelegate set_auth_ready(pid, value), to: Socket
   defdelegate wait_until_auth_ready(pid), to: Socket
