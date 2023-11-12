@@ -1,7 +1,8 @@
 ## v0.1.5 (2023-11-12)
 
-- graceful reconnection handing
-- ability to register on-connect callbacks
+- graceful re-connection handing
+- ability to register on_auth callbacks (run connection / re-connection)
+- ability to re-establish live queries subscriptions on re-connections
 - ability to configure max backoff / step duration for connection retries
 
 ## v0.1.4 (2023-11-11)
