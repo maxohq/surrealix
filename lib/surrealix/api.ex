@@ -18,7 +18,7 @@ defmodule Surrealix.Api do
   Show all currently registered live queries (SQL)
   """
   def all_live_queries(pid) do
-    :sys.get_state(pid) |> SocketState.all_lq()
+    :sys.get_state(pid) |> SocketState.all_live_queries()
   end
 
   @doc """
@@ -27,14 +27,14 @@ defmodule Surrealix.Api do
   Params:
       sql: string
       vars: map with variables to interpolate into SQL
-      callback: fn (event, data, config)
+      callback: fn (data, live_query_id)
   """
-  @spec live_query(pid(), String.t(), map(), (any, any, list() -> any)) :: :ok
+  @spec live_query(pid(), String.t(), map(), (any, String.t() -> any)) :: :ok
   def live_query(pid, sql, vars \\ %{}, callback) do
     with {:sql_live_check, true} <- {:sql_live_check, Util.is_live_query_stmt(sql)},
          {:ok, res} <- query(pid, sql, vars),
          %{"result" => [%{"result" => lq_id}]} <- res do
-      :ok = WebSockex.cast(pid, {:register_lq, sql, lq_id, callback})
+      :ok = WebSockex.cast(pid, {:register_live_query, sql, lq_id, callback})
       {:ok, res}
     else
       {:sql_live_check, false} -> {:error, "Not a live query: `#{sql}`!"}

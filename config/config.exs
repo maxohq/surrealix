@@ -8,6 +8,8 @@ config :logger, :console,
 
   level: :warning
 
+config :surrealix, :timeout, 5000
+
 config :surrealix, :conn,
   hostname: "0.0.0.0",
   port: 8000

@@ -8,18 +8,29 @@ defmodule Surrealix.SocketState do
   @doc """
     - `pending`: Pending requests map:  id => task
     - `lq_running`: live_queries map:  id => %{sql: sql}
-    - `lq_sql`: live_queries SET with queries to register after re-connection
+    - `lq_sql`: live_queries MapSet with queries to register after re-connection
   """
   defstruct pending: %{},
             lq_running: %{},
-            lq_sql: MapSet.new()
+            lq_sql: MapSet.new(),
+            auth_ready: false,
+            on_auth: nil
 
   def new(), do: %SocketState{}
+  def new(on_auth), do: %SocketState{on_auth: on_auth}
+
+  def set_auth_ready(state = %SocketState{}, value) do
+    put_in(state, [:auth_ready], value)
+  end
+
+  def is_auth_ready(state = %SocketState{}) do
+    state.auth_ready == true
+  end
 
   @doc """
   Register a task for a particular request ID
   """
-  def add_task(state = %SocketState{}, id, task) do
+  def register_task(state = %SocketState{}, id, task) do
     put_in(state, [:pending, id], task)
   end
 
@@ -41,7 +52,7 @@ defmodule Surrealix.SocketState do
   @doc """
   Register a SQL statement for a particular LiveQuery ID
   """
-  def add_lq(state = %SocketState{}, sql, query_id, callback) do
+  def register_live_query(state = %SocketState{}, sql, query_id, callback) do
     lq_sql = MapSet.put(state.lq_sql, {sql, callback})
     item = %{sql: sql, query_id: query_id, callback: callback}
 
@@ -53,7 +64,7 @@ defmodule Surrealix.SocketState do
   @doc """
   Get map that describes a particular LiveQuery ID (SQL / ID / etc)
   """
-  def get_lq(state = %SocketState{}, query_id) do
+  def get_live_query(state = %SocketState{}, query_id) do
     state
     |> get_in([:lq_running, query_id])
   end
@@ -61,7 +72,7 @@ defmodule Surrealix.SocketState do
   @doc """
   Remove a LiveQuery by ID
   """
-  def delete_lq_by_id(state = %SocketState{}, query_id) do
+  def delete_live_query_by_id(state = %SocketState{}, query_id) do
     {item, state} = pop_in(state, [:lq_running, query_id])
 
     if item do
@@ -77,7 +88,7 @@ defmodule Surrealix.SocketState do
   @doc """
   Remove a LiveQuery by SQL
   """
-  def delete_lq_by_sql(state = %SocketState{}, sql) do
+  def delete_live_query_by_sql(state = %SocketState{}, sql) do
     found = Enum.find(state.lq_running, fn {_id, value} -> Map.get(value, :sql) == sql end)
 
     if !is_nil(found) do
@@ -90,10 +101,14 @@ defmodule Surrealix.SocketState do
     end
   end
 
+  def reset_live_queries(state = %SocketState{}) do
+    Map.put(state, :lq_running, %{}) |> Map.put(:lq_sql, MapSet.new())
+  end
+
   @doc """
   Currently registered LiveQueries
   """
-  def all_lq(state = %SocketState{}) do
+  def all_live_queries(state = %SocketState{}) do
     state.lq_sql |> MapSet.to_list()
   end
 end

@@ -1,3 +1,9 @@
+## v0.1.5 (2023-11-12)
+
+- graceful reconnection handing
+- ability to register on-connect callbacks
+- ability to configure max backoff / step duration for connection retries
+
 ## v0.1.4 (2023-11-11)
 
 - much simpler handling for live query callbacks (https://github.com/maxohq/surrealix/commit/c87fe9b3853d090cb622a2478595b99a213d7fa9)

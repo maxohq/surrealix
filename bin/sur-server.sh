@@ -14,5 +14,4 @@ surreal start \
     --allow-funcs \
     --allow-net \
     --bind 0.0.0.0:8000 \
-    memory
-    ## file:mydatabase.db
+    file:data.db

@@ -47,6 +47,37 @@ end)
 Surrealix.all_live_queries(pid)
 ```
 
+## Handling reconnection
+
+To properly deal with connection drops, provide an `on_auth`-callback when starting a Surrealix Socket. `on_auth` callbacks should include logic to authenticate the connection and select a namespace / database.
+
+This callback is called in a non-blocking fashion, so it is important to wait until the `on_auth`-callback is finished. This is done via `Surrealix.wait_until_auth_ready(pid)` function, that checks auth status via busy-waiting.
+
+Live queries that were setup via `Surrealix.live_query(pid, sql, callback)` function are registed on SocketState and will be re-established after a successful reconnection.
+
+```elixir
+{:ok, pid} =
+    Surrealix.start(
+      on_auth: fn pid, _state ->
+        IO.puts("PID: #{inspect(pid)}")
+        Surrealix.signin(pid, %{user: "root", pass: "root"}) |> IO.inspect(label: :signin)
+        Surrealix.use(pid, "test", "test") |> IO.inspect(label: :use)
+      end
+    )
+
+# blocks until the `on_auth` callback is executed
+Surrealix.wait_until_auth_ready(pid)
+
+# now we can execute queries, that require auth
+Surrealix.live_query(pid, "LIVE SELECT * FROM user;", fn data, query_id ->
+  IO.inspect({data, query_id}, label: "callback")
+end)
+
+Surrealix.live_query(pid, "LIVE SELECT * FROM person;", fn data, query_id ->
+  IO.inspect({data, query_id}, label: "callback")
+end)
+```
+
 ## Telemetry
 Currently library publishes only 3 events:
 ```elixir
@@ -70,8 +101,9 @@ Surrealix.Telemetry.Logger.setup()
 
 ```elixir
 ## in config.exs / runtime.exs file
-# default 5000
-config :surrealix, timeout: :infinity
+config :surrealix, backoff_max: 2000
+config :surrealix, backoff_step: 50
+config :surrealix, timeout: :infinity # default 5000
 config :surrealix, :conn,
   hostname: "0.0.0.0",
   port: 8000
