@@ -10,21 +10,27 @@
 
 Lightweight, correct and up-to-date Elixir SDK for [SurrealDB](https://surrealdb.com/docs/integration/sdks).
 
-
 ## Why use Surrealix?
   - up-to-date on the Websocket API for SurrealDB (https://github.com/maxohq/surrealix/blob/main/gen/src/api.ts) - via code generation
   - minimal abstraction over [WebSocket (text protocol)](https://surrealdb.com/docs/integration/websocket/text) for SurrealDB
   - Elixir documentation shows raw examples from the SurrealDB docs, so that it's very clear what happens behind the covers. You can keep referring the official docs!
-  - first-class support for live-query callbacks (currently the ONLY Elixir SDK)
+  - first-class support for live-query callbacks (the only Elixir SDK providing it)
+  - working re-connection handling that includes:
+    - re-executing the 'on_auth' callback
+    - re-establishing subscriptions to active live queries
+  - verbose logging
+    - `config :logger, :console, level: :debug`
+    - `Surrealix.start_link(debug: [:trace])`
   - `:telemetry` events for request handling
-  - extensive and very maintainble (thanks to [mneme](https://github.com/zachallaun/mneme)) E2E tests against SurrealDB server (https://github.com/maxohq/surrealix/tree/main/lib/surrealdb)
+  - extensive and very maintainable (thanks to [mneme](https://github.com/zachallaun/mneme)) E2E tests against SurrealDB server (https://github.com/maxohq/surrealix/tree/main/lib/surrealdb)
+  - tests run in isolated databases, that are removed after each test completion, so there is no danger of overwriting any local development data
 
 
 ## Usage
 
 ```elixir
-# {:ok, pid} = Surrealix.start_link(namespace: "test", database: "test", debug: [:trace]) ## for debugging!
-{:ok, pid} = Surrealix.start_link(namespace: "test", database: "test")
+# {:ok, pid} = Surrealix.start_link(debug: [:trace]) ## for debugging!
+{:ok, pid} = Surrealix.start_link()
 Surrealix.signin(pid, %{user: "root", pass: "root"})
 Surrealix.use(pid, "test", "test")
 Surrealix.query(pid, "SELECT * FROM person;")
@@ -139,13 +145,6 @@ Code foundation was taken from https://github.com/joojscript/surrealdb_ex. Since
 - [Source code for the Websocket Text Protocol docs](https://github.com/surrealdb/www.surrealdb.com/blob/main/app/templates/docs/integration/websocket/text.hbs)
 - [SurrealDB SQL statements](https://surrealdb.com/docs/surrealql/statements)
 - [SurrealDB functions](https://surrealdb.com/docs/surrealql/functions)
-
-## Todo
-
-- [x] handle live query updates properly
-- [x] debug modus with verbose logging
-- [x] integration tests
-- [ ] handle disconnects gracefully
 
 
 ## Support
