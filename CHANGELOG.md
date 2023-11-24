@@ -1,3 +1,9 @@
+## v0.1.6 (2023-11-24)
+
+- simplify the API by removing the optional task as parameter
+- this enables passing task options as arguments
+- code becomes much clearer
+
 ## v0.1.5 (2023-11-12)
 
 - graceful re-connection handing
