@@ -9,8 +9,8 @@ defmodule Surrealix.Api do
   alias Surrealix.Socket
   alias Surrealix.Util
 
-  defp exec_method(pid, {method, args, task}, opts \\ []) do
-    Socket.exec_method(pid, {method, args, task}, opts)
+  defp exec_method(pid, {method, args, task_opts}) do
+    Socket.exec_method(pid, {method, args, task_opts})
   end
 
   @doc """
@@ -82,12 +82,8 @@ defmodule Surrealix.Api do
         "result": null
       }
   """
-  def ping(pid) do
-    exec_method(pid, {"ping", [], nil})
-  end
-
-  def ping(pid, task, opts \\ Config.task_opts_default()) do
-    exec_method(pid, {"ping", [], task}, opts)
+  def ping(pid, task_opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"ping", [], task_opts})
   end
 
   @doc """
@@ -110,12 +106,8 @@ defmodule Surrealix.Api do
         "result": null
       }
   """
-  def use(pid, ns, db) do
-    exec_method(pid, {"use", [ns: ns, db: db], nil})
-  end
-
-  def use(pid, ns, db, task, opts \\ Config.task_opts_default()) do
-    exec_method(pid, {"use", [ns: ns, db: db], task}, opts)
+  def use(pid, ns, db, task_opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"use", [ns: ns, db: db], task_opts})
   end
 
   @doc """
@@ -137,12 +129,8 @@ defmodule Surrealix.Api do
         }
       }
   """
-  def info(pid) do
-    exec_method(pid, {"info", [], nil})
-  end
-
-  def info(pid, task, opts \\ Config.task_opts_default()) do
-    exec_method(pid, {"info", [], task}, opts)
+  def info(pid, task_opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"info", [], task_opts})
   end
 
   @doc """
@@ -170,12 +158,8 @@ defmodule Surrealix.Api do
         "result": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTdXJyZWFsREIiLCJpYXQiOjE1MTYyMzkwMjIsIm5iZiI6MTUxNjIzOTAyMiwiZXhwIjoxODM2NDM5MDIyLCJOUyI6InRlc3QiLCJEQiI6InRlc3QiLCJTQyI6InVzZXIiLCJJRCI6InVzZXI6dG9iaWUifQ.N22Gp9ze0rdR06McGj1G-h2vu6a6n9IVqUbMFJlOxxA"
       }
   """
-  def signup(pid, payload) do
-    exec_method(pid, {"signup", [payload: payload], nil})
-  end
-
-  def signup(pid, payload, task, opts \\ Config.task_opts_default()) do
-    exec_method(pid, {"signup", [payload: payload], task}, opts)
+  def signup(pid, payload, task_opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"signup", [payload: payload], task_opts})
   end
 
   @doc """
@@ -223,12 +207,8 @@ defmodule Surrealix.Api do
         "result": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTdXJyZWFsREIiLCJpYXQiOjE1MTYyMzkwMjIsIm5iZiI6MTUxNjIzOTAyMiwiZXhwIjoxODM2NDM5MDIyLCJOUyI6InRlc3QiLCJEQiI6InRlc3QiLCJTQyI6InVzZXIiLCJJRCI6InVzZXI6dG9iaWUifQ.N22Gp9ze0rdR06McGj1G-h2vu6a6n9IVqUbMFJlOxxA"
       }
   """
-  def signin(pid, payload) do
-    exec_method(pid, {"signin", [payload: payload], nil})
-  end
-
-  def signin(pid, payload, task, opts \\ Config.task_opts_default()) do
-    exec_method(pid, {"signin", [payload: payload], task}, opts)
+  def signin(pid, payload, task_opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"signin", [payload: payload], task_opts})
   end
 
   @doc """
@@ -250,12 +230,8 @@ defmodule Surrealix.Api do
         "result": null
       }
   """
-  def authenticate(pid, token) do
-    exec_method(pid, {"authenticate", [token: token], nil})
-  end
-
-  def authenticate(pid, token, task, opts \\ Config.task_opts_default()) do
-    exec_method(pid, {"authenticate", [token: token], task}, opts)
+  def authenticate(pid, token, task_opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"authenticate", [token: token], task_opts})
   end
 
   @doc """
@@ -274,12 +250,8 @@ defmodule Surrealix.Api do
         "result": null
       }
   """
-  def invalidate(pid) do
-    exec_method(pid, {"invalidate", [], nil})
-  end
-
-  def invalidate(pid, task, opts \\ Config.task_opts_default()) do
-    exec_method(pid, {"invalidate", [], task}, opts)
+  def invalidate(pid, task_opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"invalidate", [], task_opts})
   end
 
   @doc """
@@ -302,12 +274,8 @@ defmodule Surrealix.Api do
         "result": null
       }
   """
-  def let(pid, name, value) do
-    exec_method(pid, {"let", [name: name, value: value], nil})
-  end
-
-  def let(pid, name, value, task, opts \\ Config.task_opts_default()) do
-    exec_method(pid, {"let", [name: name, value: value], task}, opts)
+  def let(pid, name, value, task_opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"let", [name: name, value: value], task_opts})
   end
 
   @doc """
@@ -329,12 +297,8 @@ defmodule Surrealix.Api do
         "result": null
       }
   """
-  def unset(pid, name) do
-    exec_method(pid, {"unset", [name: name], nil})
-  end
-
-  def unset(pid, name, task, opts \\ Config.task_opts_default()) do
-    exec_method(pid, {"unset", [name: name], task}, opts)
+  def unset(pid, name, task_opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"unset", [name: name], task_opts})
   end
 
   @doc """
@@ -373,12 +337,8 @@ defmodule Surrealix.Api do
         }
       }
   """
-  def live(pid, table, diff \\ false) do
-    exec_method(pid, {"live", [table: table, diff: diff], nil})
-  end
-
-  def live(pid, table, diff, task, opts \\ Config.task_opts_default()) do
-    exec_method(pid, {"live", [table: table, diff: diff], task}, opts)
+  def live(pid, table, diff, task_opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"live", [table: table, diff: diff], task_opts})
   end
 
   @doc """
@@ -400,12 +360,8 @@ defmodule Surrealix.Api do
         "result": null
       }
   """
-  def kill(pid, queryUuid) do
-    exec_method(pid, {"kill", [queryUuid: queryUuid], nil})
-  end
-
-  def kill(pid, queryUuid, task, opts \\ Config.task_opts_default()) do
-    exec_method(pid, {"kill", [queryUuid: queryUuid], task}, opts)
+  def kill(pid, queryUuid, task_opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"kill", [queryUuid: queryUuid], task_opts})
   end
 
   @doc """
@@ -451,12 +407,8 @@ defmodule Surrealix.Api do
         ]
       }
   """
-  def query(pid, sql, vars \\ %{}) do
-    exec_method(pid, {"query", [sql: sql, vars: vars], nil})
-  end
-
-  def query(pid, sql, vars, task, opts \\ Config.task_opts_default()) do
-    exec_method(pid, {"query", [sql: sql, vars: vars], task}, opts)
+  def query(pid, sql, vars, task_opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"query", [sql: sql, vars: vars], task_opts})
   end
 
   @doc """
@@ -483,12 +435,8 @@ defmodule Surrealix.Api do
         ]
       }
   """
-  def select(pid, thing) do
-    exec_method(pid, {"select", [thing: thing], nil})
-  end
-
-  def select(pid, thing, task, opts \\ Config.task_opts_default()) do
-    exec_method(pid, {"select", [thing: thing], task}, opts)
+  def select(pid, thing, task_opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"select", [thing: thing], task_opts})
   end
 
   @doc """
@@ -518,12 +466,8 @@ defmodule Surrealix.Api do
         ]
       }
   """
-  def create(pid, thing, data \\ %{}) do
-    exec_method(pid, {"create", [thing: thing, data: data], nil})
-  end
-
-  def create(pid, thing, data, task, opts \\ Config.task_opts_default()) do
-    exec_method(pid, {"create", [thing: thing, data: data], task}, opts)
+  def create(pid, thing, data, task_opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"create", [thing: thing, data: data], task_opts})
   end
 
   @doc """
@@ -587,12 +531,8 @@ defmodule Surrealix.Api do
         ]
       }
   """
-  def insert(pid, thing, data \\ %{}) do
-    exec_method(pid, {"insert", [thing: thing, data: data], nil})
-  end
-
-  def insert(pid, thing, data, task, opts \\ Config.task_opts_default()) do
-    exec_method(pid, {"insert", [thing: thing, data: data], task}, opts)
+  def insert(pid, thing, data, task_opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"insert", [thing: thing, data: data], task_opts})
   end
 
   @doc """
@@ -621,12 +561,8 @@ defmodule Surrealix.Api do
         }
       }
   """
-  def update(pid, thing, data \\ %{}) do
-    exec_method(pid, {"update", [thing: thing, data: data], nil})
-  end
-
-  def update(pid, thing, data, task, opts \\ Config.task_opts_default()) do
-    exec_method(pid, {"update", [thing: thing, data: data], task}, opts)
+  def update(pid, thing, data, task_opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"update", [thing: thing, data: data], task_opts})
   end
 
   @doc """
@@ -663,12 +599,8 @@ defmodule Surrealix.Api do
         ]
       }
   """
-  def merge(pid, thing, data \\ %{}) do
-    exec_method(pid, {"merge", [thing: thing, data: data], nil})
-  end
-
-  def merge(pid, thing, data, task, opts \\ Config.task_opts_default()) do
-    exec_method(pid, {"merge", [thing: thing, data: data], task}, opts)
+  def merge(pid, thing, data, task_opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"merge", [thing: thing, data: data], task_opts})
   end
 
   @doc """
@@ -713,12 +645,8 @@ defmodule Surrealix.Api do
         ]
       }
   """
-  def patch(pid, thing, patches, diff \\ false) do
-    exec_method(pid, {"patch", [thing: thing, patches: patches, diff: diff], nil})
-  end
-
-  def patch(pid, thing, patches, diff, task, opts \\ Config.task_opts_default()) do
-    exec_method(pid, {"patch", [thing: thing, patches: patches, diff: diff], task}, opts)
+  def patch(pid, thing, patches, diff, task_opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"patch", [thing: thing, patches: patches, diff: diff], task_opts})
   end
 
   @doc """
@@ -746,12 +674,8 @@ defmodule Surrealix.Api do
         }
       }
   """
-  def delete(pid, thing) do
-    exec_method(pid, {"delete", [thing: thing], nil})
-  end
-
-  def delete(pid, thing, task, opts \\ Config.task_opts_default()) do
-    exec_method(pid, {"delete", [thing: thing], task}, opts)
+  def delete(pid, thing, task_opts \\ Config.task_opts_default()) do
+    exec_method(pid, {"delete", [thing: thing], task_opts})
   end
 
   ### API METHODS : FINISH ###

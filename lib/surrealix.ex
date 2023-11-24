@@ -65,8 +65,7 @@ defmodule Surrealix do
       }
   """
   defdelegate use(pid, ns, db), to: Api
-  defdelegate use(pid, ns, db, task), to: Api
-  defdelegate use(pid, ns, db, task, opts), to: Api
+  defdelegate use(pid, ns, db, task_opts), to: Api
 
   @doc """
   info
@@ -115,8 +114,7 @@ defmodule Surrealix do
       }
   """
   defdelegate signup(pid, payload), to: Api
-  defdelegate signup(pid, payload, task), to: Api
-  defdelegate signup(pid, payload, task, opts), to: Api
+  defdelegate signup(pid, payload, task_opts), to: Api
 
   @doc """
   signin [ NS, DB, SC, ... ]
@@ -164,8 +162,7 @@ defmodule Surrealix do
       }
   """
   defdelegate signin(pid, payload), to: Api
-  defdelegate signin(pid, payload, task), to: Api
-  defdelegate signin(pid, payload, task, opts), to: Api
+  defdelegate signin(pid, payload, task_opts), to: Api
 
   @doc """
   authenticate [ token ]
@@ -187,8 +184,7 @@ defmodule Surrealix do
       }
   """
   defdelegate authenticate(pid, token), to: Api
-  defdelegate authenticate(pid, token, task), to: Api
-  defdelegate authenticate(pid, token, task, opts), to: Api
+  defdelegate authenticate(pid, token, task_opts), to: Api
 
   @doc """
   invalidate
@@ -229,8 +225,7 @@ defmodule Surrealix do
       }
   """
   defdelegate let(pid, name, value), to: Api
-  defdelegate let(pid, name, value, task), to: Api
-  defdelegate let(pid, name, value, task, opts), to: Api
+  defdelegate let(pid, name, value, task_opts), to: Api
 
   @doc """
   unset [ name ]
@@ -252,8 +247,7 @@ defmodule Surrealix do
       }
   """
   defdelegate unset(pid, name), to: Api
-  defdelegate unset(pid, name, task), to: Api
-  defdelegate unset(pid, name, task, opts), to: Api
+  defdelegate unset(pid, name, task_opts), to: Api
 
   @doc """
   live [ table ]
@@ -292,8 +286,7 @@ defmodule Surrealix do
       }
   """
   defdelegate live(pid, table, diff \\ false), to: Api
-  defdelegate live(pid, table, diff, task), to: Api
-  defdelegate live(pid, table, diff, task, opts), to: Api
+  defdelegate live(pid, table, diff, task_opts), to: Api
 
   @doc """
   kill [ queryUuid ]
@@ -315,8 +308,7 @@ defmodule Surrealix do
       }
   """
   defdelegate kill(pid, queryUuid), to: Api
-  defdelegate kill(pid, queryUuid, task), to: Api
-  defdelegate kill(pid, queryUuid, task, opts), to: Api
+  defdelegate kill(pid, queryUuid, task_opts), to: Api
 
   @doc """
   query [ sql, vars ]
@@ -362,8 +354,7 @@ defmodule Surrealix do
       }
   """
   defdelegate query(pid, sql, vars \\ %{}), to: Api
-  defdelegate query(pid, sql, vars, task), to: Api
-  defdelegate query(pid, sql, vars, task, opts), to: Api
+  defdelegate query(pid, sql, vars, task_opts), to: Api
 
   @doc """
   select [ thing ]
@@ -390,8 +381,7 @@ defmodule Surrealix do
       }
   """
   defdelegate select(pid, thing), to: Api
-  defdelegate select(pid, thing, task), to: Api
-  defdelegate select(pid, thing, task, opts), to: Api
+  defdelegate select(pid, thing, task_opts), to: Api
 
   @doc """
   create [ thing, data ]
@@ -421,8 +411,7 @@ defmodule Surrealix do
       }
   """
   defdelegate create(pid, thing, data \\ %{}), to: Api
-  defdelegate create(pid, thing, data, task), to: Api
-  defdelegate create(pid, thing, data, task, opts), to: Api
+  defdelegate create(pid, thing, data, task_opts), to: Api
 
   @doc """
   insert [ thing, data ]
@@ -486,8 +475,7 @@ defmodule Surrealix do
       }
   """
   defdelegate insert(pid, thing, data \\ %{}), to: Api
-  defdelegate insert(pid, thing, data, task), to: Api
-  defdelegate insert(pid, thing, data, task, opts), to: Api
+  defdelegate insert(pid, thing, data, task_opts), to: Api
 
   @doc """
   update [ thing, data ]
@@ -516,8 +504,7 @@ defmodule Surrealix do
       }
   """
   defdelegate update(pid, thing, data \\ %{}), to: Api
-  defdelegate update(pid, thing, data, task), to: Api
-  defdelegate update(pid, thing, data, task, opts), to: Api
+  defdelegate update(pid, thing, data, task_opts), to: Api
 
   @doc """
   merge [ thing, data ]
@@ -554,8 +541,7 @@ defmodule Surrealix do
       }
   """
   defdelegate merge(pid, thing, data \\ %{}), to: Api
-  defdelegate merge(pid, thing, data, task), to: Api
-  defdelegate merge(pid, thing, data, task, opts), to: Api
+  defdelegate merge(pid, thing, data, task_opts), to: Api
 
   @doc """
   patch [ thing, patches, diff ]
@@ -600,8 +586,7 @@ defmodule Surrealix do
       }
   """
   defdelegate patch(pid, thing, patches, diff \\ false), to: Api
-  defdelegate patch(pid, thing, patches, diff, task), to: Api
-  defdelegate patch(pid, thing, patches, diff, task, opts), to: Api
+  defdelegate patch(pid, thing, patches, diff, task_opts), to: Api
 
   @doc """
   delete [ thing ]
@@ -629,6 +614,5 @@ defmodule Surrealix do
       }
   """
   defdelegate delete(pid, thing), to: Api
-  defdelegate delete(pid, thing, task), to: Api
-  defdelegate delete(pid, thing, task, opts), to: Api
+  defdelegate delete(pid, thing, task_opts), to: Api
 end

@@ -81,32 +81,29 @@ defmodule Surrealix.Socket do
   @doc """
   Main method to send requests in blocking fashion to SurrealDB
   """
-  def exec_method(pid, {method, args, task}, opts \\ []) do
+  def exec_method(pid, {method, args, task_opts}) do
     start_time = System.monotonic_time()
     meta = %{method: method, args: args}
     Telemetry.start(:exec_method, meta)
     id = Util.uuid(40)
 
     task =
-      if !is_nil(task),
-        do: task,
-        else:
-          Task.async(fn ->
-            receive do
-              {:ok, msg, ^id} ->
-                if is_map(msg) and Map.has_key?(msg, "error"), do: {:error, msg}, else: {:ok, msg}
+      Task.async(fn ->
+        receive do
+          {:ok, msg, ^id} ->
+            if is_map(msg) and Map.has_key?(msg, "error"), do: {:error, msg}, else: {:ok, msg}
 
-              {:error, reason} ->
-                {:error, reason}
+          {:error, reason} ->
+            {:error, reason}
 
-              e ->
-                {:error, "Unknown Error #{inspect(e)}"}
-            end
-          end)
+          e ->
+            {:error, "Unknown Error #{inspect(e)}"}
+        end
+      end)
 
     WebSockex.cast(pid, {method, args, id, task})
 
-    task_timeout = Keyword.get(opts, :timeout, Config.default_timeout())
+    task_timeout = Keyword.get(task_opts, :timeout, Config.default_timeout())
     res = Task.await(task, task_timeout)
     Telemetry.stop(:exec_method, start_time, meta)
     res

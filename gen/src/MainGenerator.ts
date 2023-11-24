@@ -72,10 +72,7 @@ export class MainGenerator extends GenBase {
 
   genPayloadMethod(method: IMethod) {
     this.push(`defdelegate ${method.name}(pid, payload), to: Api`);
-    this.push(`defdelegate ${method.name}(pid, payload, task), to: Api`);
-    this.push(
-      `defdelegate ${method.name}(pid, payload, task, opts), to: Api`
-    );
+    this.push(`defdelegate ${method.name}(pid, payload, task_opts), to: Api`);
   }
 
   genInlineMethod(method: IMethod) {
@@ -95,10 +92,7 @@ export class MainGenerator extends GenBase {
 
       let params = method.parameter.map((param) => param.name).join(", ");
       this.push(`defdelegate ${method.name}(pid, ${directParams}), to: Api`);
-      this.push(`defdelegate ${method.name}(pid, ${params}, task), to: Api`);
-      this.push(
-        `defdelegate ${method.name}(pid, ${params}, task, opts), to: Api`
-      );
+      this.push(`defdelegate ${method.name}(pid, ${params}, task_opts), to: Api`);
     }
   }
   genMethodDoc(method: IMethod) {

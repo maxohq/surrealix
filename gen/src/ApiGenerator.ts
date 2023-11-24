@@ -70,8 +70,8 @@ export class ApiGenerator extends GenBase {
     alias Surrealix.Socket
     alias Surrealix.Util
 
-    defp exec_method(pid, {method, args, task}, opts \\\\ []) do
-      Socket.exec_method(pid, {method, args, task}, opts)
+    defp exec_method(pid, {method, args, task_opts}) do
+      Socket.exec_method(pid, {method, args, task_opts})
     end
 
     @doc """
@@ -110,71 +110,42 @@ export class ApiGenerator extends GenBase {
   genMethod(method: IMethod) {
     this.genMethodDoc(method);
     if (method.argType == "inline") {
-      this.genInlineMethod(method);
       this.genInlineTaskMethod(method);
     }
     if (method.argType == "payload") {
-      this.genPayloadMethod(method);
       this.genPayloadTaskMethod(method);
     }
   }
 
-  genPayloadMethod(method: IMethod) {
-    this.push(`def ${method.name}(pid, payload) do`);
-    this.push(`  exec_method(pid, {"${method.name}", [payload: payload], nil})`);
-    this.push("end");
-    this.push("");
-  }
+
   genPayloadTaskMethod(method: IMethod) {
     this.push(
-      `def ${method.name}(pid, payload, task, opts \\\\ Config.task_opts_default()) do`
+      `def ${method.name}(pid, payload, task_opts \\\\ Config.task_opts_default()) do`
     );
     this.push(
-      `  exec_method(pid, {"${method.name}", [payload: payload], task}, opts)`
+      `  exec_method(pid, {"${method.name}", [payload: payload], task_opts})`
     );
     this.push("end");
     this.push("");
   }
 
-  genInlineMethod(method: IMethod) {
-    if (method.parameter.length == 0) {
-      this.push(`def ${method.name}(pid) do`);
-    }
-    if (method.parameter.length > 0) {
-      let params = method.parameter
-        .map((param) => {
-          if (param.must) {
-            return param.name;
-          }
-          return `${param.name} \\\\ ${param.default}`;
-        })
-        .join(", ");
-      this.push(`def ${method.name}(pid, ${params}) do`);
-    }
-    let params = method.parameter
-      .map((param) => `${param.name}: ${param.name}`)
-      .join(", ");
-    this.push(`  exec_method(pid, {"${method.name}", [${params}], nil})`);
-    this.push("end");
-    this.push("");
-  }
 
   genInlineTaskMethod(method: IMethod) {
     if (method.parameter.length == 0) {
       this.push(
-        `def ${method.name}(pid, task, opts \\\\ Config.task_opts_default()) do`
+        `def ${method.name}(pid, task_opts \\\\ Config.task_opts_default()) do`
       );
     }
     if (method.parameter.length > 0) {
       let names = method.parameter.map((param) => param.name);
-      names = names.concat(["task", "opts \\\\ Config.task_opts_default()"]);
+      names = names.concat(["task_opts \\\\ Config.task_opts_default()"]);
       let params = names.join(", ");
       this.push(`def ${method.name}(pid, ${params}) do`);
     }
     let params = method.parameter
       .map((param) => `${param.name}: ${param.name}`)
       .join(", ");
-    this.push(`  exec_method(pid, {"${method.name}", [${params}], task}, opts)`);
+    this.push(`  exec_method(pid, {"${method.name}", [${params}], task_opts})`);
     this.push("end");
     this.push("");
   }
