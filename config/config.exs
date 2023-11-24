@@ -7,6 +7,7 @@ config :logger, :console, level: :warning
 config :surrealix, :timeout, 5000
 config :surrealix, :backoff_max, 2000
 config :surrealix, :backoff_step, 100
+config :surrealix, :json, Jason
 
 config :surrealix, :conn,
   hostname: "0.0.0.0",

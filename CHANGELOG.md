@@ -1,3 +1,8 @@
+## v0.1.7 (2023-11-24)
+
+- make JSON package configurable
+    - `config :surrealix, :json, Jason`
+
 ## v0.1.6 (2023-11-24)
 
 - simplify the API by removing the optional task as parameter

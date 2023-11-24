@@ -62,7 +62,7 @@ defmodule Surrealix.Api do
       "method" => method,
       "params" => params
     }
-    |> Jason.encode!()
+    |> Config.json().encode!()
   end
 
   ### API METHODS : START ###

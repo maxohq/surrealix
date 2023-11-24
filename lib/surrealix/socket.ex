@@ -154,7 +154,7 @@ defmodule Surrealix.Socket do
   end
 
   def handle_frame({_type, msg}, state) do
-    json = Jason.decode!(msg)
+    json = Config.json().decode!(msg)
     id = Map.get(json, "id")
     task = SocketState.get_task(state, id)
 

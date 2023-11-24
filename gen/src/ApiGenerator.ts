@@ -54,7 +54,7 @@ export class ApiGenerator extends GenBase {
       "method" => method,
       "params" => params
     }
-    |> Jason.encode!()
+    |> Config.json().encode!()
     `;
     this.push(lpad(code, "    "));
     this.push("end");

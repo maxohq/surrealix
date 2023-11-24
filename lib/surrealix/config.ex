@@ -28,4 +28,7 @@ defmodule Surrealix.Config do
   @backoff_step Application.compile_env(:surrealix, :backoff_step, 50)
   def backoff_max, do: @backoff_max
   def backoff_step, do: @backoff_step
+
+  @json Application.compile_env(:surrealix, :json, Jason)
+  def json(), do: @json
 end
