@@ -77,7 +77,7 @@ defmodule Surrealix.Test do
       %{
         "result" => %{
           "action" => "DELETE",
-          "result" => "user:marcus"
+          "result" => %{"age" => 44, "id" => "user:marcus", "name" => "Marcus Aurelius"}
         }
       } = data3
 
