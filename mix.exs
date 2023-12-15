@@ -1,7 +1,7 @@
 defmodule Surrealix.MixProject do
   use Mix.Project
   @source_url "https://github.com/maxohq/surrealix"
-  @version "0.1.7"
+  @version "0.1.8"
 
   def project do
     [
@@ -21,7 +21,7 @@ defmodule Surrealix.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger, :runtime_tools, :wx, :observer],
+      extra_applications: [:logger, :runtime_tools],
       mod: {Surrealix.Application, []}
     ]
   end

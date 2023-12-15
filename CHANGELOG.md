@@ -1,3 +1,7 @@
+## v0.1.8 (2023-12-15)
+
+- remove wx from `:extra_applications`
+
 ## v0.1.7 (2023-11-24)
 
 - make JSON package configurable
